@@ -4,6 +4,12 @@ This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequas
 
 https://registry.terraform.io/providers/Chaotic-Logic/discord/latest
 
+## Building the provider
+```sh
+go mod vendor
+make
+```
+
 ## Resources
 
 * discord_category_channel
