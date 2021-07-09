@@ -67,7 +67,7 @@ func resourceSystemChannelRead(ctx context.Context, d *schema.ResourceData, m in
     var diags diag.Diagnostics
     client := m.(*Context).Client
 
-    serverId := disgord.ParseSnowflakeString(d.Get("server_id").(string))
+    serverId := disgord.ParseSnowflakeString(d.Id())
 
     server, err := client.GetGuild(ctx, serverId)
     if err != nil {
