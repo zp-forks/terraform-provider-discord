@@ -5,9 +5,17 @@ This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequas
 https://registry.terraform.io/providers/Chaotic-Logic/discord/latest
 
 ## Building the provider
+### Development
 ```sh
 go mod vendor
 make
+```
+
+### Release
+```
+go mod vendor
+export GPG_FINGERPRINT="D081560F57E59EDA7CB369BE2FFBD6BE37B85C17"
+goreleaser release --skip-publish
 ```
 
 ## Resources
