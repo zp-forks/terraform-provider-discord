@@ -122,7 +122,7 @@ func resourceSystemChannelDelete(ctx context.Context, d *schema.ResourceData, m 
 
     builder := client.UpdateGuild(ctx, server.ID)
 
-    builder.SetSystemChannelID(disgord.ParseSnowflakeString(""))
+    builder.SetSystemChannelID(disgord.NewSnowflake(1))
 
     _, err = builder.Execute()
     if err != nil {
