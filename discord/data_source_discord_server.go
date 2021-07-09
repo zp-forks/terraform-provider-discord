@@ -53,10 +53,6 @@ func dataSourceDiscordServer() *schema.Resource {
                 Type: schema.TypeInt,
                 Computed: true,
             },
-            "system_channel_id": {
-                Type: schema.TypeInt,
-                Computed: true,
-            },
             "owner_id": {
                 Type: schema.TypeInt,
                 Computed: true,
@@ -108,9 +104,6 @@ func dataSourceDiscordServerRead(ctx context.Context, d *schema.ResourceData, m 
 
     if !server.AfkChannelID.IsZero() {
         d.Set("afk_channel_id", server.AfkChannelID.String())
-    }
-    if !server.SystemChannelID.IsZero() {
-        d.Set("system_channel_id", server.SystemChannelID.String())
     }
     if !server.OwnerID.IsZero() {
         d.Set("owner_id", server.OwnerID.String())

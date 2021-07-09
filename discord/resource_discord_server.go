@@ -116,10 +116,6 @@ func resourceDiscordServer() *schema.Resource {
                 Type:     schema.TypeString,
                 Optional: true,
             },
-            "system_channel_id": {
-                Type:     schema.TypeString,
-                Optional: true,
-            },
         },
     }
 }
@@ -183,10 +179,6 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
         builder.SetOwnerID(disgord.ParseSnowflakeString(v.(string)))
         edit = true
     }
-    if v, ok := d.GetOk("system_channel_id"); ok {
-        builder.SetSystemChannelID(disgord.ParseSnowflakeString(v.(string)))
-        edit = true
-    }
     if splash != "" {
         builder.SetSplash(splash)
         edit = true
@@ -229,9 +221,6 @@ func resourceServerRead(ctx context.Context, d *schema.ResourceData, m interface
     d.Set("explicit_content_filter", server.ExplicitContentFilter)
     if !server.AfkChannelID.IsZero() {
         d.Set("afk_channel_id", server.AfkChannelID.String())
-    }
-    if !server.SystemChannelID.IsZero() {
-        d.Set("system_channel_id", server.SystemChannelID.String())
     }
 
     // We don't want to set the owner to null, should only change this if its changing to something else
@@ -285,15 +274,6 @@ func resourceServerUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
     if d.HasChange("owner_id") {
         builder.SetOwnerID(disgord.ParseSnowflakeString(d.Get("owner_id").(string)))
-        edit = true
-    }
-    if d.HasChange("system_channel_id") {
-        id := d.Get("system_channel_id").(string)
-        if id != "" {
-            builder.SetSystemChannelID(disgord.ParseSnowflakeString(id))
-        } else {
-            builder.SetSystemChannelID(disgord.Snowflake(0))
-        }
         edit = true
     }
     if d.HasChange("verification_level") {

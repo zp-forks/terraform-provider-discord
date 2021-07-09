@@ -34,15 +34,17 @@ func Provider() *schema.Provider {
             "discord_role_everyone":      resourceDiscordRoleEveryone(),
             "discord_member_roles":       resourceDiscordMemberRoles(),
             "discord_message":            resourceDiscordMessage(),
+            "discord_system_channel":     resourceDiscordSystemChannel(),
         },
 
         DataSourcesMap: map[string]*schema.Resource{
-            "discord_permission":  dataSourceDiscordPermission(),
-            "discord_color":       dataSourceDiscordColor(),
-            "discord_local_image": dataSourceDiscordLocalImage(),
-            "discord_role":        dataSourceDiscordRole(),
-            "discord_server":      dataSourceDiscordServer(),
-            "discord_member":      dataSourceDiscordMember(),
+            "discord_permission":     dataSourceDiscordPermission(),
+            "discord_color":          dataSourceDiscordColor(),
+            "discord_local_image":    dataSourceDiscordLocalImage(),
+            "discord_role":           dataSourceDiscordRole(),
+            "discord_server":         dataSourceDiscordServer(),
+            "discord_member":         dataSourceDiscordMember(),
+            "discord_system_channel": dataSourceDiscordSystemChannel(),
         },
 
         ConfigureContextFunc: providerConfigure,
