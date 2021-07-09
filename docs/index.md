@@ -1,5 +1,7 @@
 # Discord Provider
 
+This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequasi/terraform-provider-discord). We ran into some problems with this provider and decided to fix them with this opinionated version.
+
 The Discord provider is used to interact with the Discord API. It requires proper credentials before it can be used.
 
 Use the navigation on the left to read more about the resources and data sources.
