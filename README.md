@@ -1,6 +1,8 @@
 # Discord Terraform Provider
 
-https://registry.terraform.io/providers/aequasi/discord/latest
+This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequasi/terraform-provider-discord). We ran into some problems with this provider and decided to fix them with this opiniated version.
+
+https://registry.terraform.io/providers/Chaotic-Logic/discord/latest
 
 ## Resources
 
