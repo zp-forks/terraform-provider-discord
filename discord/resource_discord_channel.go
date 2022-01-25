@@ -54,10 +54,8 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 		}
 	}
 
-	if s != nil {
-		for k, v := range s {
-			addedSchema[k] = v
-		}
+	for k, v := range s {
+		addedSchema[k] = v
 	}
 
 	return addedSchema
