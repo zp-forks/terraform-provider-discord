@@ -171,7 +171,7 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 			}
 
 			if err = syncChannelPermissions(client, ctx, parent, channel); err != nil {
-				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String(), err.Error())...)
+				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String())...)
 			}
 		}
 	}
@@ -185,7 +185,7 @@ func resourceChannelRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	channel, err := client.Cache().GetChannel(getId(d.Id()))
 	if err != nil {
-		return diag.Errorf("Failed to fetch channel %s: %e", d.Id(), err.Error())
+		return diag.Errorf("Failed to fetch channel %s: %s", d.Id(), err.Error())
 	}
 
 	channelType, ok := getTextChannelType(channel.Type)
@@ -278,7 +278,7 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			}
 
 			if err = syncChannelPermissions(client, ctx, parent, channel); err != nil {
-				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String(), err.Error())...)
+				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String())...)
 			}
 		}
 	}
@@ -293,7 +293,7 @@ func resourceChannelDelete(ctx context.Context, d *schema.ResourceData, m interf
 	data, _ := getId(d.Id()).MarshalJSON()
 	_, err := client.Cache().ChannelDelete(data)
 	if err != nil {
-		return diag.Errorf("Failed to delete channel %s: %e", d.Id(), err.Error())
+		return diag.Errorf("Failed to delete channel %s: %s", d.Id(), err.Error())
 	}
 
 	return diags
