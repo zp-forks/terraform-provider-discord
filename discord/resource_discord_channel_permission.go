@@ -68,14 +68,11 @@ func resourceChannelPermissionCreate(ctx context.Context, d *schema.ResourceData
 	overwriteId := getId(d.Get("overwrite_id").(string))
 	permissionType, _ := getDiscordChannelPermissionType(d.Get("type").(string))
 
-	var err error
-	err = client.Channel(channelId).UpdatePermissions(overwriteId, &disgord.UpdateChannelPermissions{
+	if err := client.Channel(channelId).UpdatePermissions(overwriteId, &disgord.UpdateChannelPermissions{
 		Allow: disgord.PermissionBit(d.Get("allow").(int)),
 		Deny:  disgord.PermissionBit(d.Get("deny").(int)),
 		Type:  permissionType,
-	})
-
-	if err != nil {
+	}); err != nil {
 		return diag.Errorf("Failed to update channel permissions %s: %s", channelId.String(), err.Error())
 	}
 
