@@ -101,6 +101,7 @@ func resourceMemberRolesRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	for _, r := range items {
 		v, _ := convertToRoleSchema(r)
+
 		if hasRole(member, v.RoleId) {
 			roles = append(roles, &RoleSchema{RoleId: v.RoleId, HasRole: true})
 		} else {
