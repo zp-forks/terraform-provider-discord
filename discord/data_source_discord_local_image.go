@@ -2,10 +2,11 @@ package discord
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/polds/imgbase64"
-	"strconv"
 )
 
 func dataSourceDiscordLocalImage() *schema.Resource {

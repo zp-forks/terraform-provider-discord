@@ -2,8 +2,9 @@ package discord
 
 import (
 	"encoding/json"
-	"github.com/andersfylling/disgord"
 	"time"
+
+	"github.com/andersfylling/disgord"
 )
 
 type UnmappedEmbed struct {
