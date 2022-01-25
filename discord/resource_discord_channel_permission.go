@@ -74,11 +74,11 @@ func resourceChannelPermissionCreate(ctx context.Context, d *schema.ResourceData
 		Type:  permissionType,
 	}); err != nil {
 		return diag.Errorf("Failed to update channel permissions %s: %s", channelId.String(), err.Error())
+	} else {
+		d.SetId(strconv.Itoa(Hashcode(fmt.Sprintf("%s:%s:%s", channelId, overwriteId, d.Get("type").(string)))))
+
+		return diags
 	}
-
-	d.SetId(strconv.Itoa(Hashcode(fmt.Sprintf("%s:%s:%s", channelId, overwriteId, d.Get("type").(string)))))
-
-	return diags
 }
 
 func resourceChannelPermissionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -88,7 +88,7 @@ func resourceChannelPermissionRead(ctx context.Context, d *schema.ResourceData, 
 	channelId := getId(d.Get("channel_id").(string))
 	overwriteId := getId(d.Get("overwrite_id").(string))
 
-	channel, err := client.Cache().GetChannel(channelId)
+	channel, err := client.Channel(channelId).Get()
 	if err != nil {
 		return diag.Errorf("Failed to find channel %s: %s", channelId.String(), err.Error())
 	}
@@ -114,17 +114,15 @@ func resourceChannelPermissionUpdate(ctx context.Context, d *schema.ResourceData
 	overwriteId := getId(d.Get("overwrite_id").(string))
 	permissionType, _ := getDiscordChannelPermissionType(d.Get("type").(string))
 
-	err := client.Channel(channelId).UpdatePermissions(overwriteId, &disgord.UpdateChannelPermissions{
+	if err := client.Channel(channelId).UpdatePermissions(overwriteId, &disgord.UpdateChannelPermissions{
 		Allow: disgord.PermissionBit(d.Get("allow").(int)),
 		Deny:  disgord.PermissionBit(d.Get("deny").(int)),
 		Type:  uint(permissionType),
-	})
-
-	if err != nil {
+	}); err != nil {
 		return diag.Errorf("Failed to update channel permissions %s: %s", channelId.String(), err.Error())
+	} else {
+		return diags
 	}
-
-	return diags
 }
 
 func resourceChannelPermissionDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -133,22 +131,10 @@ func resourceChannelPermissionDelete(ctx context.Context, d *schema.ResourceData
 
 	channelId := getId(d.Get("channel_id").(string))
 	overwriteId := getId(d.Get("overwrite_id").(string))
-	err := client.Channel(channelId).DeletePermission(overwriteId)
 
-	if err != nil {
+	if err := client.Channel(channelId).DeletePermission(overwriteId); err != nil {
 		return diag.Errorf("Failed to delete channel permissions %s: %s", channelId.String(), err.Error())
+	} else {
+		return diags
 	}
-
-	return diags
-}
-
-func getDiscordChannelPermissionType(value string) (uint, bool) {
-	switch value {
-	case "role":
-		return 0, true
-	case "user":
-		return 1, true
-	}
-
-	return 0, false
 }

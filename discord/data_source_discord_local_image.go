@@ -27,14 +27,14 @@ func dataSourceDiscordLocalImage() *schema.Resource {
 
 func dataSourceDiscordLocalImageRead(_ context.Context, d *schema.ResourceData, _ interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
+	file := d.Get("file").(string)
 
-	img, err := imgbase64.FromLocal(d.Get("file").(string))
-	if err != nil {
-		return diag.Errorf("Failed to process %s: %s", d.Get("file").(string), err.Error())
+	if img, err := imgbase64.FromLocal(file); err != nil {
+		return diag.Errorf("Failed to process %s: %s", file, err.Error())
+	} else {
+		d.Set("data_uri", img)
+		d.SetId(strconv.Itoa(Hashcode(d.Get("data_uri").(string))))
+
+		return diags
 	}
-
-	d.Set("data_uri", img)
-	d.SetId(strconv.Itoa(Hashcode(d.Get("data_uri").(string))))
-
-	return diags
 }

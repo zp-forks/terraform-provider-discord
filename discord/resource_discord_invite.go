@@ -57,21 +57,19 @@ func resourceInviteCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 	channelId := getId(d.Get("channel_id").(string))
 
-	invite, err := client.Channel(channelId).CreateInvite(&disgord.CreateInvite{
+	if invite, err := client.Channel(channelId).CreateInvite(&disgord.CreateInvite{
 		MaxAge:    d.Get("max_age").(int),
 		MaxUses:   d.Get("max_uses").(int),
 		Temporary: d.Get("temporary").(bool),
 		Unique:    d.Get("unique").(bool),
-	})
-
-	if err != nil {
+	}); err != nil {
 		return diag.Errorf("Failed to create a invite: %s", err.Error())
+	} else {
+		d.SetId(invite.Code)
+		d.Set("code", invite.Code)
+
+		return diags
 	}
-
-	d.SetId(invite.Code)
-	d.Set("code", invite.Code)
-
-	return diags
 }
 
 func resourceInviteRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -91,11 +89,9 @@ func resourceInviteDelete(ctx context.Context, d *schema.ResourceData, m interfa
 	var diags diag.Diagnostics
 	client := m.(*Context).Client
 
-	data, _ := getId(d.Id()).MarshalJSON()
-	_, err := client.Cache().InviteDelete(data)
-	if err != nil {
+	if _, err := client.Invite(d.Id()).Delete(); err != nil {
 		return diag.FromErr(err)
+	} else {
+		return diags
 	}
-
-	return diags
 }

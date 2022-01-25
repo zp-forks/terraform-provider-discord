@@ -72,14 +72,14 @@ func dataSourceMemberRead(ctx context.Context, d *schema.ResourceData, m interfa
 	serverId := getId(d.Get("server_id").(string))
 
 	if v, ok := d.GetOk("user_id"); ok {
-		member, memberErr = client.Cache().GetMember(serverId, getId(v.(string)))
+		member, memberErr = client.Guild(serverId).Member(getId(v.(string))).Get()
 	}
 
 	if v, ok := d.GetOk("username"); ok {
 		username := v.(string)
 		discriminator := d.Get("discriminator").(string)
 
-		members, err := client.Cache().GetMembers(serverId, &disgord.GetMembers{Limit: 0})
+		members, err := client.Guild(serverId).GetMembers(&disgord.GetMembers{Limit: 0})
 		if err != nil {
 			return diag.Errorf("Failed to fetch members for %s: %s", serverId.String(), err.Error())
 		}

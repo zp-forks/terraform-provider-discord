@@ -78,15 +78,14 @@ func resourceDiscordRole() *schema.Resource {
 }
 
 func resourceRoleImport(ctx context.Context, data *schema.ResourceData, i interface{}) ([]*schema.ResourceData, error) {
-	serverId, roleId, err := getBothIds(data.Id())
-	if err != nil {
+	if serverId, roleId, err := getBothIds(data.Id()); err != nil {
 		return nil, err
+	} else {
+		data.SetId(roleId.String())
+		data.Set("server_id", serverId.String())
+
+		return schema.ImportStatePassthroughContext(ctx, data, i)
 	}
-
-	data.SetId(roleId.String())
-	data.Set("server_id", serverId.String())
-
-	return schema.ImportStatePassthroughContext(ctx, data, i)
 }
 
 func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -122,11 +121,10 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 			return diag.Errorf("New Role position is out of bounds: %d", newPosition.(int))
 		}
 
-		_, err := client.Guild(serverId).UpdateRolePositions([]disgord.UpdateGuildRolePositions{
+		if _, err := client.Guild(serverId).UpdateRolePositions([]disgord.UpdateGuildRolePositions{
 			{ID: oldRole.ID, Position: role.Position},
 			{ID: role.ID, Position: newPosition.(int)},
-		})
-		if err != nil {
+		}); err != nil {
 			diags = append(diags, diag.Errorf("Failed to re-order roles: %s", err.Error())...)
 		} else {
 			d.Set("position", newPosition)
@@ -160,9 +158,9 @@ func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		d.Set("mentionable", role.Mentionable)
 		d.Set("permissions", role.Permissions)
 		d.Set("managed", role.Managed)
-	}
 
-	return diags
+		return diags
+	}
 }
 
 func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -194,11 +192,10 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 			return diag.Errorf("New Role position is out of bounds: %d", newPosition.(int))
 		}
 
-		_, err := client.Guild(serverId).UpdateRolePositions([]disgord.UpdateGuildRolePositions{
+		if _, err := client.Guild(serverId).UpdateRolePositions([]disgord.UpdateGuildRolePositions{
 			{ID: oldRole.ID, Position: role.Position},
 			{ID: roleId, Position: newPosition.(int)},
-		})
-		if err != nil {
+		}); err != nil {
 			diags = append(diags, diag.Errorf("Failed to re-order roles: %s", err.Error())...)
 		} else {
 			d.Set("position", newPosition)
@@ -228,9 +225,9 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		d.Set("mentionable", role.Mentionable)
 		d.Set("permissions", role.Permissions)
 		d.Set("managed", role.Managed)
-	}
 
-	return diags
+		return diags
+	}
 }
 
 func resourceRoleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

@@ -31,12 +31,11 @@ func dataSourceDiscordSystemChannelRead(ctx context.Context, d *schema.ResourceD
 	client := m.(*Context).Client
 
 	serverId := d.Id()
-	server, err = client.Cache().GetGuild(getId(serverId))
-	if err != nil {
+	if server, err = client.Guild(getId(serverId)).Get(); err != nil {
 		return diag.Errorf("Failed to fetch server %s: %s", serverId, err.Error())
+	} else {
+		d.Set("system_channel_id", server.SystemChannelID)
+
+		return diags
 	}
-
-	d.Set("system_channel_id", server.SystemChannelID)
-
-	return diags
 }
