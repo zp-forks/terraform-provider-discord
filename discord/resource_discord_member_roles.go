@@ -72,8 +72,7 @@ func resourceMemberRolesCreate(ctx context.Context, d *schema.ResourceData, m in
 	serverId := getId(d.Get("server_id").(string))
 	userId := getId(d.Get("user_id").(string))
 
-	_, err := client.Guild(serverId).Member(userId).Get()
-	if err != nil {
+	if _, err := client.Guild(serverId).Member(userId).Get(); err != nil {
 		return diag.Errorf("Could not get member %s in %s: %s", userId.String(), serverId.String(), err.Error())
 	}
 
@@ -101,6 +100,7 @@ func resourceMemberRolesRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	for _, r := range items {
 		v, _ := convertToRoleSchema(r)
+
 		if hasRole(member, v.RoleId) {
 			roles = append(roles, &RoleSchema{RoleId: v.RoleId, HasRole: true})
 		} else {
@@ -132,15 +132,15 @@ func resourceMemberRolesUpdate(ctx context.Context, d *schema.ResourceData, m in
 	for _, r := range items {
 		v, _ := convertToRoleSchema(r)
 		hasRole := hasRole(member, v.RoleId)
-		// if its supposed to have the role, and it does, continue
+		// If it's supposed to have the role, and it does, continue
 		if hasRole && v.HasRole {
 			continue
 		}
-		// If its supposed to have the role, and it doesnt, add it
+		// If it's supposed to have the role, and it doesn't, add it
 		if v.HasRole && !hasRole {
 			roles = append(roles, v.RoleId)
 		}
-		// If its not supposed to have the role, and it does, remove it
+		// If it's not supposed to have the role, and it does, remove it
 		if !v.HasRole && hasRole {
 			roles = removeRoleById(roles, v.RoleId)
 		}
@@ -191,7 +191,7 @@ func resourceMemberRolesDelete(ctx context.Context, d *schema.ResourceData, m in
 	for _, r := range items {
 		v, _ := convertToRoleSchema(r)
 		hasRole := hasRole(member, v.RoleId)
-		// if its supposed to have the role, and it does, remove it
+		// if it's supposed to have the role, and it does, remove it
 		if hasRole && v.HasRole {
 			roles = removeRoleById(roles, v.RoleId)
 		}

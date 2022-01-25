@@ -54,10 +54,8 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 		}
 	}
 
-	if s != nil {
-		for k, v := range s {
-			addedSchema[k] = v
-		}
+	for k, v := range s {
+		addedSchema[k] = v
 	}
 
 	return addedSchema
@@ -66,36 +64,39 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 func validateChannel(d *schema.ResourceData) (bool, error) {
 	channelType := d.Get("type").(string)
 
-	if channelType == "category" {
-		if _, ok := d.GetOk("category"); ok {
-			return false, errors.New("category cannot be a child of another category")
-		}
-		if _, ok := d.GetOk("nsfw"); ok {
-			return false, errors.New("nsfw is not allowed on categories")
-		}
-	}
-
-	if channelType == "voice" {
-		if _, ok := d.GetOk("topic"); ok {
-			return false, errors.New("topic is not allowed on voice channels")
-		}
-		if _, ok := d.GetOk("nsfw"); ok {
-			return false, errors.New("nsfw is not allowed on voice channels")
-		}
-	}
-
-	if channelType == "text" {
-		if _, ok := d.GetOk("bitrate"); ok {
-			return false, errors.New("bitrate is not allowed on text channels")
-		}
-		if _, ok := d.GetOk("user_limit"); ok {
-			if d.Get("user_limit").(int) > 0 {
-				return false, errors.New("user_limit is not allowed on text channels")
+	switch channelType {
+	case "category":
+		{
+			if _, ok := d.GetOk("category"); ok {
+				return false, errors.New("category cannot be a child of another category")
+			}
+			if _, ok := d.GetOk("nsfw"); ok {
+				return false, errors.New("nsfw is not allowed on categories")
 			}
 		}
-		name := d.Get("name").(string)
-		if strings.ToLower(name) != name {
-			return false, errors.New("name must be lowercase")
+	case "voice":
+		{
+			if _, ok := d.GetOk("topic"); ok {
+				return false, errors.New("topic is not allowed on voice channels")
+			}
+			if _, ok := d.GetOk("nsfw"); ok {
+				return false, errors.New("nsfw is not allowed on voice channels")
+			}
+		}
+	case "text":
+		{
+			if _, ok := d.GetOk("bitrate"); ok {
+				return false, errors.New("bitrate is not allowed on text channels")
+			}
+			if _, ok := d.GetOk("user_limit"); ok {
+				if d.Get("user_limit").(int) > 0 {
+					return false, errors.New("user_limit is not allowed on text channels")
+				}
+			}
+			name := d.Get("name").(string)
+			if strings.ToLower(name) != name {
+				return false, errors.New("name must be lowercase")
+			}
 		}
 	}
 
@@ -120,23 +121,30 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 	var nsfw bool
 	var parentId disgord.Snowflake
 
-	if channelType == "text" {
-		if v, ok := d.GetOk("topic"); ok {
-			topic = v.(string)
+	switch channelType {
+	case "text":
+		{
+			if v, ok := d.GetOk("topic"); ok {
+				topic = v.(string)
+			}
+			if v, ok := d.GetOk("nsfw"); ok {
+				nsfw = v.(bool)
+			}
 		}
-		if v, ok := d.GetOk("nsfw"); ok {
-			nsfw = v.(bool)
-		}
-	} else if channelType == "voice" {
-		if v, ok := d.GetOk("bitrate"); ok {
-			bitrate = uint(v.(int))
-		}
-		if v, ok := d.GetOk("userlimit"); ok {
-			userlimit = uint(v.(int))
+	case "voice":
+		{
+			if v, ok := d.GetOk("bitrate"); ok {
+				bitrate = uint(v.(int))
+			}
+			if v, ok := d.GetOk("userlimit"); ok {
+				userlimit = uint(v.(int))
+			}
 		}
 	}
 
-	if channelType != "category" {
+	isCategoryCh := channelType == "category"
+
+	if !isCategoryCh {
 		if v, ok := d.GetOk("category"); ok {
 			parentId = getId(v.(string))
 		}
@@ -160,18 +168,18 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 	d.Set("server_id", serverId)
 	d.Set("channel_id", channel.ID.String())
 
-	if channelType != "category" {
+	if !isCategoryCh {
 		if v, ok := d.GetOk("sync_perms_with_category"); ok && v.(bool) {
 			if channel.ParentID.IsZero() {
 				return append(diags, diag.Errorf("Can't sync permissions with category. Channel (%s) doesn't have a category", channel.ID.String())...)
 			}
-			parent, err := client.Cache().GetChannel(channel.ParentID)
+			parent, err := client.Channel(channel.ParentID).Get()
 			if err != nil {
 				return append(diags, diag.Errorf("Can't sync permissions with category. Channel (%s) doesn't have a category", channel.ID.String())...)
 			}
 
 			if err = syncChannelPermissions(client, ctx, parent, channel); err != nil {
-				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String(), err.Error())...)
+				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String())...)
 			}
 		}
 	}
@@ -183,9 +191,9 @@ func resourceChannelRead(ctx context.Context, d *schema.ResourceData, m interfac
 	var diags diag.Diagnostics
 	client := m.(*Context).Client
 
-	channel, err := client.Cache().GetChannel(getId(d.Id()))
+	channel, err := client.Channel(getId(d.Id())).Get()
 	if err != nil {
-		return diag.Errorf("Failed to fetch channel %s: %e", d.Id(), err.Error())
+		return diag.Errorf("Failed to fetch channel %s: %s", d.Id(), err.Error())
 	}
 
 	channelType, ok := getTextChannelType(channel.Type)
@@ -197,32 +205,37 @@ func resourceChannelRead(ctx context.Context, d *schema.ResourceData, m interfac
 	d.Set("name", channel.Name)
 	d.Set("position", channel.Position)
 
-	if channelType == "text" {
-		d.Set("topic", channel.Topic)
-		d.Set("nsfw", channel.NSFW)
-	} else if channelType == "voice" {
-		d.Set("bitrate", channel.Bitrate)
-		d.Set("userlimit", channel.UserLimit)
+	switch channelType {
+	case "text":
+		{
+			d.Set("topic", channel.Topic)
+			d.Set("nsfw", channel.NSFW)
+		}
+	case "voice":
+		{
+			d.Set("bitrate", channel.Bitrate)
+			d.Set("userlimit", channel.UserLimit)
+		}
 	}
 
 	if channelType != "category" {
-		if !channel.ParentID.IsZero() {
-			parent, err := client.Cache().GetChannel(channel.ParentID)
+		if channel.ParentID.IsZero() {
+			d.Set("sync_perms_with_category", false)
+		} else {
+			parent, err := client.Channel(channel.ParentID).Get()
 			if err != nil {
 				return diag.Errorf("Failed to fetch category of channel %s: %s", channel.ID.String(), err.Error())
 			}
 
 			synced := arePermissionsSynced(channel, parent)
 			d.Set("sync_perms_with_category", synced)
-		} else {
-			d.Set("sync_perms_with_category", false)
 		}
 	}
 
-	if !channel.ParentID.IsZero() {
-		d.Set("category", channel.ParentID.String())
-	} else {
+	if channel.ParentID.IsZero() {
 		d.Set("category", nil)
+	} else {
+		d.Set("category", channel.ParentID.String())
 	}
 
 	return diags
@@ -250,7 +263,7 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			params.Topic = map[bool]*string{true: d.Get("topic").(*string), false: &channel.Topic}[d.HasChange("topic")]
 			params.NSFW = map[bool]*bool{true: d.Get("nsfw").(*bool), false: &channel.NSFW}[d.HasChange("nsfw")]
 		}
-	case channelType == "":
+	case channelType == "voice":
 		{
 			params.Bitrate = map[bool]*uint{true: d.Get("bitrate").(*uint), false: &channel.Bitrate}[d.HasChange("bitrate")]
 			params.UserLimit = map[bool]*uint{true: d.Get("user_limit").(*uint), false: &channel.UserLimit}[d.HasChange("user_limit")]
@@ -272,13 +285,13 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 			if channel.ParentID.IsZero() {
 				return append(diags, diag.Errorf("Can't sync permissions with category. Channel (%s) doesn't have a category", channel.ID.String())...)
 			}
-			parent, err := client.Cache().GetChannel(channel.ParentID)
+			parent, err := client.Channel(channel.ParentID).Get()
 			if err != nil {
 				return append(diags, diag.Errorf("Can't sync permissions with category. Channel (%s) doesn't have a category", channel.ID.String())...)
 			}
 
 			if err = syncChannelPermissions(client, ctx, parent, channel); err != nil {
-				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String(), err.Error())...)
+				return append(diags, diag.Errorf("Can't sync permissions with category: %s", channel.ID.String())...)
 			}
 		}
 	}
@@ -290,10 +303,9 @@ func resourceChannelDelete(ctx context.Context, d *schema.ResourceData, m interf
 	var diags diag.Diagnostics
 	client := m.(*Context).Client
 
-	data, _ := getId(d.Id()).MarshalJSON()
-	_, err := client.Cache().ChannelDelete(data)
+	_, err := client.Channel(getId(d.Id())).Delete()
 	if err != nil {
-		return diag.Errorf("Failed to delete channel %s: %e", d.Id(), err.Error())
+		return diag.Errorf("Failed to delete channel %s: %s", d.Id(), err.Error())
 	}
 
 	return diags

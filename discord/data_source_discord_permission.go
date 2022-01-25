@@ -3,10 +3,11 @@ package discord
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"strconv"
 )
 
 var permissions map[string]int
@@ -72,11 +73,11 @@ func dataSourceDiscordPermission() *schema.Resource {
 				str := v.(string)
 				allowed := [3]string{"allow", "unset", "deny"}
 
-				if !contains(allowed, str) {
+				if contains(allowed, str) {
+					return diags
+				} else {
 					return append(diags, diag.Errorf("%s is not an allowed value. Pick one of: allowed, unset, deny", str)...)
 				}
-
-				return diags
 			},
 		}
 	}
@@ -93,11 +94,10 @@ func dataSourceDiscordPermissionRead(_ context.Context, d *schema.ResourceData, 
 	var allowBits int
 	var denyBits int
 	for perm, bit := range permissions {
-		v := d.Get(perm).(string)
-		if v == "allow" {
+		switch d.Get(perm).(string) {
+		case "allow":
 			allowBits |= bit
-		}
-		if v == "deny" {
+		case "deny":
 			denyBits |= bit
 		}
 	}

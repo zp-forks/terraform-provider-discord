@@ -107,3 +107,14 @@ func syncChannelPermissions(c *disgord.Client, ctx context.Context, from *disgor
 
 	return nil
 }
+
+func getDiscordChannelPermissionType(value string) (uint, bool) {
+	switch value {
+	case "role":
+		return 0, true
+	case "user":
+		return 1, true
+	default:
+		return 0, false
+	}
+}

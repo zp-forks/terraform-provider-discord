@@ -257,14 +257,13 @@ func resourceMessageCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 	channelId := getId(d.Get("channel_id").(string))
 
-	var embeds []*disgord.Embed
+	embeds := make([]*disgord.Embed, 0, 1)
 	if v, ok := d.GetOk("embed"); ok {
-		embed, err := buildEmbed(v.([]interface{}))
-		if err != nil {
+		if embed, err := buildEmbed(v.([]interface{})); err != nil {
 			return diag.Errorf("Failed to create message in %s: %s", channelId.String(), err.Error())
+		} else {
+			embeds = append(embeds, embed)
 		}
-
-		embeds = append(embeds, embed)
 	}
 
 	message, err := client.Channel(channelId).CreateMessage(&disgord.CreateMessage{
@@ -355,17 +354,16 @@ func resourceMessageUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		content = message.Content
 	}
 
-	var embeds []*disgord.Embed
+	embeds := make([]*disgord.Embed, 0, 1)
 	if d.HasChange("embed") {
 		var embed *disgord.Embed
 		_, n := d.GetChange("embed")
 		if len(n.([]interface{})) > 0 {
-			e, err := buildEmbed(n.([]interface{}))
-			if err != nil {
+			if e, err := buildEmbed(n.([]interface{})); err != nil {
 				return diag.Errorf("Failed to edit message %s in %s: %s", messageId.String(), channelId.String(), err.Error())
+			} else {
+				embed = e
 			}
-
-			embed = e
 		}
 
 		embeds = append(embeds, embed)
@@ -397,7 +395,7 @@ func resourceMessageDelete(ctx context.Context, d *schema.ResourceData, m interf
 	messageId := getId(d.Id())
 	if err := client.Channel(channelId).Message(messageId).Delete(); err != nil {
 		return diag.Errorf("Failed to delete message %s in %s: %s", messageId.String(), channelId.String(), err.Error())
+	} else {
+		return diags
 	}
-
-	return diags
 }

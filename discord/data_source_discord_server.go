@@ -69,7 +69,7 @@ func dataSourceDiscordServerRead(ctx context.Context, d *schema.ResourceData, m 
 	client := m.(*Context).Client
 
 	if v, ok := d.GetOk("server_id"); ok {
-		server, err = client.Cache().GetGuild(getId(v.(string)))
+		server, err = client.Guild(getId(v.(string))).Get()
 		if err != nil {
 			return diag.Errorf("Failed to fetch server %s: %s", v.(string), err.Error())
 		}

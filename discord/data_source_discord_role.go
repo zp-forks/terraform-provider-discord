@@ -61,7 +61,7 @@ func dataSourceDiscordRoleRead(ctx context.Context, d *schema.ResourceData, m in
 	client := m.(*Context).Client
 
 	serverId := getId(d.Get("server_id").(string))
-	server, err := client.Cache().GetGuild(serverId)
+	server, err := client.Guild(serverId).Get()
 	if err != nil {
 		return diag.Errorf("Failed to fetch server %s: %s", serverId.String(), err.Error())
 	}

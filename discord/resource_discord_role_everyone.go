@@ -61,9 +61,9 @@ func resourceRoleEveryoneRead(ctx context.Context, d *schema.ResourceData, m int
 		return diag.Errorf("Failed to fetch role %s: %s", d.Id(), err.Error())
 	} else {
 		d.Set("permissions", role.Permissions)
-	}
 
-	return diags
+		return diags
+	}
 }
 
 func resourceRoleEveryoneUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -78,7 +78,7 @@ func resourceRoleEveryoneUpdate(ctx context.Context, d *schema.ResourceData, m i
 		return diag.Errorf("Failed to update role %s: %s", d.Id(), err.Error())
 	} else {
 		d.Set("permissions", role.Permissions)
-	}
 
-	return diags
+		return diags
+	}
 }

@@ -2,11 +2,12 @@ package discord
 
 import (
 	"context"
+	"strconv"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"gopkg.in/go-playground/colors.v1"
-	"strconv"
-	"strings"
 )
 
 func dataSourceDiscordColor() *schema.Resource {
@@ -44,28 +45,26 @@ func dataSourceDiscordColorRead(_ context.Context, d *schema.ResourceData, _ int
 
 	var hex string
 	if v, ok := d.GetOk("hex"); ok {
-		clr, err := colors.ParseHEX(v.(string))
-		if err != nil {
+		if clr, err := colors.ParseHEX(v.(string)); err != nil {
 			return diag.Errorf("Failed to parse hex %s: %s", v.(string), err.Error())
+		} else {
+			hex = clr.String()
 		}
-		hex = clr.String()
 	}
 	if v, ok := d.GetOk("rgb"); ok {
-		clr, err := colors.ParseRGB(v.(string))
-		if err != nil {
+		if clr, err := colors.ParseRGB(v.(string)); err != nil {
 			return diag.Errorf("Failed to parse rgb %s: %s", v.(string), err.Error())
+		} else {
+			hex = clr.ToHEX().String()
 		}
-
-		hex = clr.ToHEX().String()
 	}
 
-	intColor, err := ConvertToInt(hex)
-	if err != nil {
+	if intColor, err := ConvertToInt(hex); err != nil {
 		return diag.Errorf("Failed to parse hex %s: %s", hex, err.Error())
+	} else {
+		d.SetId(strconv.Itoa(int(intColor)))
+		d.Set("dec", int(intColor))
+
+		return diags
 	}
-
-	d.SetId(strconv.Itoa(int(intColor)))
-	d.Set("dec", int(intColor))
-
-	return diags
 }

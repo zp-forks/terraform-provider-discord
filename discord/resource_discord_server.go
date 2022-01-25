@@ -152,8 +152,7 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	for _, channel := range channels {
-		_, err := client.Channel(channel.ID).Delete()
-		if err != nil {
+		if _, err := client.Channel(channel.ID).Delete(); err != nil {
 			return diag.Errorf("Failed to delete channel for new server: %s", err.Error())
 		}
 	}

@@ -2,8 +2,9 @@ package discord
 
 import (
 	"fmt"
-	"github.com/andersfylling/disgord"
 	"strings"
+
+	"github.com/andersfylling/disgord"
 )
 
 func parseTwoIds(id string) (string, string, error) {
