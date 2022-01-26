@@ -143,7 +143,7 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 			if v, ok := d.GetOk("bitrate"); ok {
 				bitrate = uint(v.(int))
 			}
-			if v, ok := d.GetOk("userlimit"); ok {
+			if v, ok := d.GetOk("user_limit"); ok {
 				userlimit = uint(v.(int))
 			}
 		}
@@ -225,7 +225,7 @@ func resourceChannelRead(ctx context.Context, d *schema.ResourceData, m interfac
 	case "voice":
 		{
 			d.Set("bitrate", channel.Bitrate)
-			d.Set("userlimit", channel.UserLimit)
+			d.Set("user_limit", channel.UserLimit)
 		}
 	}
 
