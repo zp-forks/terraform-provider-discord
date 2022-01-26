@@ -143,6 +143,7 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 			if v, ok := d.GetOk("bitrate"); ok {
 				bitrate = uint(v.(int))
 			}
+			// FIXME: user_limit
 			if v, ok := d.GetOk("userlimit"); ok {
 				userlimit = uint(v.(int))
 			}
