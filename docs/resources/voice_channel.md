@@ -20,3 +20,4 @@ resource discord_voice_channel general {
 * `bitrate` (Optional) Bitrate of the channel
 * `userlimit` (Optional) User Limit of the channel
 * `category` (Optional) ID of category to place this channel in
+* `sync_perms_with_category` (Optional) Whether channel permissions should be synced or not with the category this channel is in

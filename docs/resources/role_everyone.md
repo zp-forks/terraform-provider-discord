@@ -1,13 +1,13 @@
 # Discord Role Everyone Resource
 
-A resource to create a role
+A resource to create a everyone's role
 
 ## Example Usage
 
 ```hcl-terraform
-resource discord_role moderator {
+resource discord_role_everyone everyone {
     server_id = var.server_id
-    permissions = data.discord_permission.moderator.allow_bits
+    permissions = data.discord_permission.everyone.allow_bits
 }
 ```
 
