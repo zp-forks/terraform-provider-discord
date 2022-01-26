@@ -83,7 +83,7 @@ func validateChannel(d *schema.ResourceData) (bool, error) {
 				return false, errors.New("nsfw is not allowed on voice channels")
 			}
 		}
-	case "text":
+	case "text", "news":
 		{
 			if _, ok := d.GetOk("bitrate"); ok {
 				return false, errors.New("bitrate is not allowed on text channels")
@@ -129,6 +129,12 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 			}
 			if v, ok := d.GetOk("nsfw"); ok {
 				nsfw = v.(bool)
+			}
+		}
+	case "news":
+		{
+			if v, ok := d.GetOk("topic"); ok {
+				topic = v.(string)
 			}
 		}
 	case "voice":
@@ -211,6 +217,10 @@ func resourceChannelRead(ctx context.Context, d *schema.ResourceData, m interfac
 			d.Set("topic", channel.Topic)
 			d.Set("nsfw", channel.NSFW)
 		}
+	case "news":
+		{
+			d.Set("topic", channel.Topic)
+		}
 	case "voice":
 		{
 			d.Set("bitrate", channel.Bitrate)
@@ -257,13 +267,17 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	position := uint(channel.Position)
 	params.Position = map[bool]*uint{true: d.Get("position").(*uint), false: &position}[d.HasChange("position")]
 
-	switch {
-	case channelType == "text":
+	switch channelType {
+	case "text":
 		{
 			params.Topic = map[bool]*string{true: d.Get("topic").(*string), false: &channel.Topic}[d.HasChange("topic")]
 			params.NSFW = map[bool]*bool{true: d.Get("nsfw").(*bool), false: &channel.NSFW}[d.HasChange("nsfw")]
 		}
-	case channelType == "voice":
+	case "news":
+		{
+			params.Topic = map[bool]*string{true: d.Get("topic").(*string), false: &channel.Topic}[d.HasChange("topic")]
+		}
+	case "voice":
 		{
 			params.Bitrate = map[bool]*uint{true: d.Get("bitrate").(*uint), false: &channel.Bitrate}[d.HasChange("bitrate")]
 			params.UserLimit = map[bool]*uint{true: d.Get("user_limit").(*uint), false: &channel.UserLimit}[d.HasChange("user_limit")]
