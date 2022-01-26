@@ -2,6 +2,7 @@ package discord
 
 import (
 	"context"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -28,6 +29,7 @@ func Provider() *schema.Provider {
 			"discord_category_channel":   resourceDiscordCategoryChannel(),
 			"discord_text_channel":       resourceDiscordTextChannel(),
 			"discord_voice_channel":      resourceDiscordVoiceChannel(),
+			"discord_news_channel":       resourceDiscordNewsChannel(),
 			"discord_channel_permission": resourceDiscordChannelPermission(),
 			"discord_invite":             resourceDiscordInvite(),
 			"discord_role":               resourceDiscordRole(),

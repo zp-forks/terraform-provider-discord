@@ -20,3 +20,4 @@ resource discord_text_channel general {
 * `topic` (Optional) Topic of the channel
 * `nsfw` (Optional) Whether the channel is NSFW
 * `category` (Optional) ID of category to place this channel in
+* `sync_perms_with_category` (Optional) Whether channel permissions should be synced or not with the category this channel is in
