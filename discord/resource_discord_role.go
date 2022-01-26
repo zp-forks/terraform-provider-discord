@@ -117,14 +117,13 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 				break
 			}
 		}
-		if oldRole == nil {
-			return diag.Errorf("New Role position is out of bounds: %d", newPosition.(int))
+
+		param := []disgord.UpdateGuildRolePositions{{ID: role.ID, Position: newPosition.(int)}}
+		if oldRole != nil {
+			param = append(param, disgord.UpdateGuildRolePositions{ID: oldRole.ID, Position: role.Position})
 		}
 
-		if _, err := client.Guild(serverId).UpdateRolePositions([]disgord.UpdateGuildRolePositions{
-			{ID: oldRole.ID, Position: role.Position},
-			{ID: role.ID, Position: newPosition.(int)},
-		}); err != nil {
+		if _, err := client.Guild(serverId).UpdateRolePositions(param); err != nil {
 			diags = append(diags, diag.Errorf("Failed to re-order roles: %s", err.Error())...)
 		} else {
 			d.Set("position", newPosition)
@@ -188,14 +187,12 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 				break
 			}
 		}
-		if oldRole == nil {
-			return diag.Errorf("New Role position is out of bounds: %d", newPosition.(int))
+		param := []disgord.UpdateGuildRolePositions{{ID: roleId, Position: newPosition.(int)}}
+		if oldRole != nil {
+			param = append(param, disgord.UpdateGuildRolePositions{ID: oldRole.ID, Position: role.Position})
 		}
 
-		if _, err := client.Guild(serverId).UpdateRolePositions([]disgord.UpdateGuildRolePositions{
-			{ID: oldRole.ID, Position: role.Position},
-			{ID: roleId, Position: newPosition.(int)},
-		}); err != nil {
+		if _, err := client.Guild(serverId).UpdateRolePositions(param); err != nil {
 			diags = append(diags, diag.Errorf("Failed to re-order roles: %s", err.Error())...)
 		} else {
 			d.Set("position", newPosition)
