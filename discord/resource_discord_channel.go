@@ -121,6 +121,7 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 	var nsfw bool
 	var parentId disgord.Snowflake
 
+	// TODO: news chでもnsfwは設定できそう　CRUDすべてに影響
 	switch channelType {
 	case "text":
 		{
