@@ -40,20 +40,27 @@ func resourceSystemChannelCreate(ctx context.Context, d *schema.ResourceData, m 
 		serverId = disgord.ParseSnowflakeString(v.(string))
 	}
 
-	_, err := client.Guild(serverId).Get()
+	builder := client.Guild(serverId)
+	server, err := builder.Get()
 	if err != nil {
 		return diag.Errorf("Failed to find server: %s", err.Error())
 	}
 
-	var systemChannelId disgord.Snowflake
+	systemChannelId := &server.SystemChannelID
 	if v, ok := d.GetOk("system_channel_id"); ok {
-		systemChannelId = disgord.ParseSnowflakeString(v.(string))
+		parsedId := disgord.ParseSnowflakeString(v.(string))
+
+		// if id is 0, system channel id cannot be set to 0, so an error has occurred.
+		if parsedId == disgord.Snowflake(0) {
+			systemChannelId = nil
+		} else {
+			systemChannelId = &parsedId
+		}
 	} else {
 		return diag.Errorf("Failed to parse system channel id: %s", err.Error())
 	}
-
-	if _, err := client.Guild(serverId).Update(&disgord.UpdateGuild{
-		SystemChannelID: &systemChannelId,
+	if _, err := builder.Update(&disgord.UpdateGuild{
+		SystemChannelID: systemChannelId,
 	}); err != nil {
 		return diag.Errorf("Failed to edit server: %s", err.Error())
 	}
@@ -84,15 +91,16 @@ func resourceSystemChannelUpdate(ctx context.Context, d *schema.ResourceData, m 
 	client := m.(*Context).Client
 
 	serverId := disgord.ParseSnowflakeString(d.Get("server_id").(string))
+	builder := client.Guild(serverId)
 
-	if _, err := client.Guild(serverId).Get(); err != nil {
+	if _, err := builder.Get(); err != nil {
 		return diag.Errorf("Error fetching server: %s", err.Error())
 	}
 
 	if d.HasChange("system_channel_id") {
 		id := disgord.ParseSnowflakeString(d.Get("system_channel_id").(string))
 
-		if _, err := client.Guild(serverId).Update(&disgord.UpdateGuild{
+		if _, err := builder.Update(&disgord.UpdateGuild{
 			SystemChannelID: &id,
 		}); err != nil {
 			return diag.Errorf("Failed to edit server: %s", err.Error())
@@ -107,15 +115,14 @@ func resourceSystemChannelDelete(ctx context.Context, d *schema.ResourceData, m 
 	client := m.(*Context).Client
 
 	serverId := disgord.ParseSnowflakeString(d.Get("server_id").(string))
+	builder := client.Guild(serverId)
 
-	if _, err := client.Guild(serverId).Get(); err != nil {
+	if _, err := builder.Get(); err != nil {
 		return diag.Errorf("Error fetching server: %s", err.Error())
 	}
 
-	// TODO: 本当にこれで動くのか？
-	systemChannelId := disgord.Snowflake(1)
-	if _, err := client.Guild(serverId).Update(&disgord.UpdateGuild{
-		SystemChannelID: &systemChannelId,
+	if _, err := builder.Update(&disgord.UpdateGuild{
+		SystemChannelID: nil,
 	}); err != nil {
 		return diag.Errorf("Failed to edit server: %s", err.Error())
 	}
