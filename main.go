@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/aequasi/discord-terraform/discord"
+	"github.com/aequasilucky3028/discord-terraform/discord"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
