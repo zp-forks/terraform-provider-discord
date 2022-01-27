@@ -1,4 +1,4 @@
-module github.com/aequasi/discord-terraform
+module github.com/lucky3028/discord-terraform
 
 go 1.17
 
