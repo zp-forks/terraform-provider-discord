@@ -40,14 +40,22 @@ func resourceSystemChannelCreate(ctx context.Context, d *schema.ResourceData, m 
 		serverId = disgord.ParseSnowflakeString(v.(string))
 	}
 
-	_, err := client.Guild(serverId).Get()
+	builder := client.Guild(serverId)
+	server, err := builder.Get()
 	if err != nil {
 		return diag.Errorf("Failed to find server: %s", err.Error())
 	}
 
-	var systemChannelId disgord.Snowflake
+	systemChannelId := &server.SystemChannelID
 	if v, ok := d.GetOk("system_channel_id"); ok {
-		systemChannelId = disgord.ParseSnowflakeString(v.(string))
+		parsedId := disgord.ParseSnowflakeString(v.(string))
+
+		// if id is 0, system channel id cannot be set to 0, so an error has occurred.
+		if parsedId == disgord.Snowflake(0) {
+			systemChannelId = nil
+		} else {
+			systemChannelId = &parsedId
+		}
 	} else {
 		return diag.Errorf("Failed to parse system channel id: %s", err.Error())
 	}
