@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/aequasilucky3028/discord-terraform/discord"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/lucky3028/discord-terraform/discord"
 )
 
 func main() {
