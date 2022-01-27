@@ -47,6 +47,7 @@ func dataSourceDiscordPermission() *schema.Resource {
 		"manage_emojis":             0x40000000,
 		"use_application_commands":  0x80000000,
 		"request_to_speak":          0x100000000,
+		"manage_events":             0x200000000,
 		"manage_threads":            0x400000000,
 		"create_public_threads":     0x800000000,
 		"create_private_threads":    0x1000000000,
