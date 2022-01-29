@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: git fetch --prune --unshallow
+      - name: Fetch all git history
+        run: git fetch --prune --unshallow
       - name: Set git user and email
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -25,6 +26,8 @@ jobs:
       - changelog
     steps:
       - uses: actions/checkout@v2
+      - name: Fetch all git history
+        run: git fetch --prune --unshallow
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
