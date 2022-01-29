@@ -1,7 +1,8 @@
 name: release
 on:
   workflow_dispatch:
-
+env:
+  BRANCH_NAME: ${GITHUB_REF#refs/heads/}
 jobs:
   changelog:
     runs-on: ubuntu-latest
@@ -16,35 +17,38 @@ jobs:
       - name: Install standard-version
         run: npm install -g standard-version@v9.3.2
       - name: Generate changelog
-        run: standard-version --first-release --dry-run
-      # - name: Push tag
-      #   run: git push --follow-tags origin test
-
-  # goreleaser:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - changelog
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - run: git pull origin ${GITHUB_REF#refs/heads/}
-  #     - run: git log --pretty=oneline | head -n 3
-      # - name: Set up Go
-      #   uses: actions/setup-go@v2
-      #   with:
-      #     go-version: 1.17
-      # - name: Import GPG key
-      #   id: import_gpg
-      #   uses: hashicorp/ghaction-import-gpg@v2.1.0
-      #   env:
-      #     GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      #     PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
-      # - name: Run GoReleaser
-      #   uses: goreleaser/goreleaser-action@v2
-      #   with:
-      #     version: latest
-      #     args: release --rm-dist
-      #   env:
-      #     GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: standard-version --first-release
+      - name: Push tag
+        run: git push --follow-tags origin $BRANCH_NAME
+  goreleaser:
+    runs-on: ubuntu-latest
+    needs:
+      - changelog
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      # ここでpullし直さないと、前のjobでのコミットやタグを読み込まない
+      - run: git pull origin $BRANCH_NAME
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Import GPG key
+        id: import_gpg
+        uses: hashicorp/ghaction-import-gpg@v2.1.0
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+      - name: Set git user and email
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
