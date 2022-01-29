@@ -1,14 +1,15 @@
 name: release
 on:
   workflow_dispatch:
-
+env:
+  BRANCH_NAME: ${GITHUB_REF#refs/heads/}
 jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Fetch all git history
-        run: git fetch --prune --unshallow
+        with:
+          fetch-depth: 0
       - name: Set git user and email
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -18,16 +19,17 @@ jobs:
       - name: Generate changelog
         run: standard-version --first-release
       - name: Push tag
-        run: git push --follow-tags origin master
-
+        run: git push --follow-tags origin $BRANCH_NAME
   goreleaser:
     runs-on: ubuntu-latest
     needs:
       - changelog
     steps:
       - uses: actions/checkout@v2
-      - name: Fetch all git history
-        run: git fetch --prune --unshallow
+        with:
+          fetch-depth: 0
+      # ここでpullし直さないと、前のjobでのコミットやタグを読み込まない
+      - run: git pull origin $BRANCH_NAME
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -38,6 +40,10 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+      - name: Set git user and email
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
