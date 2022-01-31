@@ -13,7 +13,7 @@ jobs:
       - name: Install standard-version
         run: npm install -g standard-version@v9.3.2
       - name: Generate changelog
-        run: standard-version --first-release
+        run: standard-version
       - name: Push tag
         run: git push --follow-tags origin ${GITHUB_REF#refs/heads/}
   goreleaser:
