@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.0...v1.0.1) (2022-02-01)
+
+
+### Bug Fixes
+
+* ch name is not string point ([9d415c9](https://github.com/Lucky3028/terraform-provider-discord/commit/9d415c96d308776d9f7b2bcd54f460022df57250))
+
 ## 1.0.0 (2022-01-29)
 
 
