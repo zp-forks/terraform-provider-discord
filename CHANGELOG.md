@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.1...v1.0.2) (2022-02-01)
+
+
+### Bug Fixes
+
+* d.Get doesn't return pointer ([a04c9f8](https://github.com/Lucky3028/terraform-provider-discord/commit/a04c9f8a6c6ce55a7cd13b0c683b36696a9a5e19))
+
+
+### Chores
+
+* add converter from int to uint ([9cfa7c0](https://github.com/Lucky3028/terraform-provider-discord/commit/9cfa7c0665e7413ced2e92c24430804508aadc18))
+
 ### [1.0.1](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.0...v1.0.1) (2022-02-01)
 
 
