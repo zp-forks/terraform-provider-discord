@@ -265,10 +265,10 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	var (
 		name      string
 		position  uint
-		topic     string
-		nsfw      bool
-		bitRate   uint
-		userLimit uint
+		topic     string = ""
+		nsfw      bool   = false
+		bitRate   uint   = 8000
+		userLimit uint   = 0
 		parentId  *disgord.Snowflake
 	)
 
