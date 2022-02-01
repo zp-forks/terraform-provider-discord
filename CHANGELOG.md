@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.3](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.2...v1.0.3) (2022-02-01)
+
+
+### Bug Fixes
+
+* bitrate must be above or equal to 8000 ([20ea23a](https://github.com/Lucky3028/terraform-provider-discord/commit/20ea23a9ad1ae984debde1d70b89b2d72df1266f))
+
 ### [1.0.2](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.1...v1.0.2) (2022-02-01)
 
 
