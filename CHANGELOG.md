@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.4](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.3...v1.0.4) (2022-02-01)
+
+
+### Chores
+
+* add validator ([ac33235](https://github.com/Lucky3028/terraform-provider-discord/commit/ac33235df8d625b269839e2e704790459a0f9343))
+* remove default values ([b73c973](https://github.com/Lucky3028/terraform-provider-discord/commit/b73c9730fba324259dd9a5d9b73ec0619a654f4f))
+* remove validator ([d775e79](https://github.com/Lucky3028/terraform-provider-discord/commit/d775e79e7c81567a62e1ae89d7fd9d9fff5be4c4))
+
 ### [1.0.3](https://github.com/Lucky3028/terraform-provider-discord/compare/v1.0.2...v1.0.3) (2022-02-01)
 
 
