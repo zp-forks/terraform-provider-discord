@@ -277,15 +277,15 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	var (
 		name      string
 		position  uint
-		topic     string = ""
-		nsfw      bool   = false
-		bitRate   uint   = 8000
-		userLimit uint   = 0
+		topic     string
+		nsfw      bool
+		bitRate   uint = 64000
+		userLimit uint
 		parentId  *disgord.Snowflake
 	)
 
 	name = map[bool]string{true: d.Get("name").(string), false: channel.Name}[d.HasChange("name")]
-	position = map[bool]uint{true: toUint(d.Get("position").(int)), false: toUint(channel.Position)}[d.HasChange("position")]
+	position = map[bool]uint{true: uint(d.Get("position").(int)), false: uint(channel.Position)}[d.HasChange("position")]
 
 	switch channelType {
 	case "text":
