@@ -2,6 +2,7 @@ package discord
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/andersfylling/disgord"
@@ -39,6 +40,15 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 			Type:     schema.TypeInt,
 			Default:  1,
 			Optional: true,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
+				v := val.(int)
+
+				if v < 0 {
+					errors = append(errors, fmt.Errorf("position must be greater than 0, got: %d", v))
+				}
+
+				return
+			},
 		},
 	}
 
