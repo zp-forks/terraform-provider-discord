@@ -264,7 +264,8 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	params := new(disgord.UpdateChannel)
 
-	params.Name = map[bool]*string{true: d.Get("name").(*string), false: &channel.Name}[d.HasChange("name")]
+	name := map[bool]string{true: d.Get("name").(string), false: channel.Name}[d.HasChange("name")]
+	params.Name = &name
 	position := uint(channel.Position)
 	params.Position = map[bool]*uint{true: d.Get("position").(*uint), false: &position}[d.HasChange("position")]
 
