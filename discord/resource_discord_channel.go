@@ -262,36 +262,50 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	channel, _ := client.Channel(getId(d.Id())).Get()
 	channelType := d.Get("type").(string)
 
-	params := new(disgord.UpdateChannel)
+	var (
+		name      string
+		position  uint
+		topic     string
+		nsfw      bool
+		bitRate   uint
+		userLimit uint
+		parentId  *disgord.Snowflake
+	)
 
-	name := map[bool]string{true: d.Get("name").(string), false: channel.Name}[d.HasChange("name")]
-	params.Name = &name
-	position := uint(channel.Position)
-	params.Position = map[bool]*uint{true: d.Get("position").(*uint), false: &position}[d.HasChange("position")]
+	name = map[bool]string{true: d.Get("name").(string), false: channel.Name}[d.HasChange("name")]
+	position = map[bool]uint{true: toUint(d.Get("position").(int)), false: toUint(channel.Position)}[d.HasChange("position")]
 
 	switch channelType {
 	case "text":
 		{
-			params.Topic = map[bool]*string{true: d.Get("topic").(*string), false: &channel.Topic}[d.HasChange("topic")]
-			params.NSFW = map[bool]*bool{true: d.Get("nsfw").(*bool), false: &channel.NSFW}[d.HasChange("nsfw")]
+			topic = map[bool]string{true: d.Get("topic").(string), false: channel.Topic}[d.HasChange("topic")]
+			nsfw = map[bool]bool{true: d.Get("nsfw").(bool), false: channel.NSFW}[d.HasChange("nsfw")]
 		}
 	case "news":
 		{
-			params.Topic = map[bool]*string{true: d.Get("topic").(*string), false: &channel.Topic}[d.HasChange("topic")]
+			topic = map[bool]string{true: d.Get("topic").(string), false: channel.Topic}[d.HasChange("topic")]
 		}
 	case "voice":
 		{
-			params.Bitrate = map[bool]*uint{true: d.Get("bitrate").(*uint), false: &channel.Bitrate}[d.HasChange("bitrate")]
-			params.UserLimit = map[bool]*uint{true: d.Get("user_limit").(*uint), false: &channel.UserLimit}[d.HasChange("user_limit")]
+			bitRate = map[bool]uint{true: d.Get("bitrate").(uint), false: channel.Bitrate}[d.HasChange("bitrate")]
+			userLimit = map[bool]uint{true: d.Get("user_limit").(uint), false: channel.UserLimit}[d.HasChange("user_limit")]
 		}
 	}
 
 	if channelType != "category" && d.HasChange("category") {
 		id := getId(d.Get("category").(string))
-		params.ParentID = map[bool]*disgord.Snowflake{true: &id, false: nil}[d.Get("category").(string) != ""]
+		parentId = map[bool]*disgord.Snowflake{true: &id, false: nil}[d.Get("category").(string) != ""]
 	}
 
-	channel, err := client.Channel(channel.ID).Update(params)
+	channel, err := client.Channel(channel.ID).Update(&disgord.UpdateChannel{
+		Name:      &name,
+		Position:  &position,
+		Topic:     &topic,
+		NSFW:      &nsfw,
+		Bitrate:   &bitRate,
+		UserLimit: &userLimit,
+		ParentID:  parentId,
+	})
 	if err != nil {
 		return diag.Errorf("Failed to update channel %s: %s", d.Id(), err.Error())
 	}
