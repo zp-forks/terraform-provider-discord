@@ -125,11 +125,13 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 	channelType := d.Get("type").(string)
 	channelTypeInt, _ := getDiscordChannelType(channelType)
 
-	var topic string
-	var bitrate uint
-	var userlimit uint
-	var nsfw bool
-	var parentId disgord.Snowflake
+	var (
+		topic     string
+		bitrate   uint = 64000
+		userlimit uint
+		nsfw      bool
+		parentId  disgord.Snowflake
+	)
 
 	// TODO: news chでもnsfwは設定できそう　CRUDすべてに影響
 	switch channelType {
