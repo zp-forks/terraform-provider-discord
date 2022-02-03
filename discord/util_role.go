@@ -2,10 +2,8 @@ package discord
 
 import (
 	"context"
-	"log"
 
 	"github.com/andersfylling/disgord"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
@@ -77,9 +75,6 @@ func reorderRoles(ctx context.Context, m interface{}, serverId disgord.Snowflake
 	for index, r := range roles {
 		params = append(params, disgord.UpdateGuildRolePositions{ID: r.ID, Position: index})
 	}
-
-	// FIXME: ロギングいる？
-	log.Print(spew.Sdump(params))
 
 	if roles, err = client.Guild(serverId).UpdateRolePositions(params); err != nil {
 		return false, diag.Errorf("Failed to re-order roles: %s", err.Error())
