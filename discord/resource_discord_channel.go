@@ -133,21 +133,14 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 		parentId  disgord.Snowflake
 	)
 
-	// TODO: news chでもnsfwは設定できそう　CRUDすべてに影響
 	switch channelType {
-	case "text":
+	case "text", "news":
 		{
 			if v, ok := d.GetOk("topic"); ok {
 				topic = v.(string)
 			}
 			if v, ok := d.GetOk("nsfw"); ok {
 				nsfw = v.(bool)
-			}
-		}
-	case "news":
-		{
-			if v, ok := d.GetOk("topic"); ok {
-				topic = v.(string)
 			}
 		}
 	case "voice":
@@ -225,14 +218,10 @@ func resourceChannelRead(ctx context.Context, d *schema.ResourceData, m interfac
 	d.Set("position", channel.Position)
 
 	switch channelType {
-	case "text":
+	case "text", "news":
 		{
 			d.Set("topic", channel.Topic)
 			d.Set("nsfw", channel.NSFW)
-		}
-	case "news":
-		{
-			d.Set("topic", channel.Topic)
 		}
 	case "voice":
 		{
@@ -288,14 +277,10 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	position = map[bool]uint{true: uint(d.Get("position").(int)), false: uint(channel.Position)}[d.HasChange("position")]
 
 	switch channelType {
-	case "text":
+	case "text", "news":
 		{
 			topic = map[bool]string{true: d.Get("topic").(string), false: channel.Topic}[d.HasChange("topic")]
 			nsfw = map[bool]bool{true: d.Get("nsfw").(bool), false: channel.NSFW}[d.HasChange("nsfw")]
-		}
-	case "news":
-		{
-			topic = map[bool]string{true: d.Get("topic").(string), false: channel.Topic}[d.HasChange("topic")]
 		}
 	case "voice":
 		{
