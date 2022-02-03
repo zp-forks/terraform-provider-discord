@@ -1,22 +1,14 @@
 # Discord Terraform Provider
 
-This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequasi/terraform-provider-discord). We ran into some problems with this provider and decided to fix them with this opinionated version.
+This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequasi/terraform-provider-discord) and [Chaotic-Logic/terraform-provider-discord](https://github.com/Chaotic-Logic/terraform-provider-discord).
 
-https://registry.terraform.io/providers/Chaotic-Logic/discord/latest
+https://registry.terraform.io/providers/Lucky3028/discord/latest
 
 ## Building the provider
-### Development
-```sh
-go mod vendor
-make
-```
 
 ### Release
-```
-go mod vendor
-export GPG_FINGERPRINT="D081560F57E59EDA7CB369BE2FFBD6BE37B85C17"
-goreleaser release --skip-publish
-```
+
+Check [the GitHubActions file](./.github/workflows/release.yml).
 
 ## Resources
 
