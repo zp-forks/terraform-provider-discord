@@ -13,7 +13,7 @@ runs:
         path: |
           ~/go/pkg/mod
           ~/.cache/go-build
-        key: ${{ runner.os }}-${{ inputs.cache-ver }}-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ inputs.cache-ver }}-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-${{ inputs.cache-ver }}-
           ${{ runner.os }}-go-
