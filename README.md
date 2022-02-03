@@ -1,5 +1,8 @@
 # Discord Terraform Provider
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Lucky3028/terraform-provider-discord/Go?style=for-the-badge)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/Lucky3028/terraform-provider-discord?style=for-the-badge)
+
 This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequasi/terraform-provider-discord) and [Chaotic-Logic/terraform-provider-discord](https://github.com/Chaotic-Logic/terraform-provider-discord).
 
 https://registry.terraform.io/providers/Lucky3028/discord/latest
