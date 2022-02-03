@@ -253,7 +253,6 @@ func resourceServerUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	// FIXME: Update()に書き換え
-	// TODO: updateする値がすべてそのままの値だとしても動くのか？
 	builder := client.Guild(server.ID).UpdateBuilder()
 	edit := false
 
