@@ -1,0 +1,19 @@
+name: Go cache
+description: Cache golang deps
+inputs:
+  cache-ver:
+    description: Cache version
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Use cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: ${{ runner.os }}-${{ inputs.cache-ver }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ inputs.cache-ver }}-
+          ${{ runner.os }}-go-
