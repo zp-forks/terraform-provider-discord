@@ -12,5 +12,8 @@
     { "type": "build", "hidden": true },
     { "type": "revert", "section": "Reverts" },
     { "type": "ci", "hidden": true }
-  ]
+  ],
+  "skip": {
+    "commit": true
+  }
 }
