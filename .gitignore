@@ -2,3 +2,4 @@ release.sh
 dist
 vendor
 terraform-provider-discord
+CHANGELOG.md
