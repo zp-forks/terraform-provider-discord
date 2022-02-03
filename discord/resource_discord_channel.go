@@ -60,7 +60,7 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 		addedSchema["sync_perms_with_category"] = &schema.Schema{
 			Type:     schema.TypeBool,
 			Optional: true,
-			Default:  true,
+			Default:  false,
 		}
 	}
 
