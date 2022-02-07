@@ -199,19 +199,25 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		}
 	}
 
-	var color uint
+	var (
+		newName        = d.Get("name").(string)
+		newColor       int
+		newHoist       = d.Get("hoist").(bool)
+		newMentionable = d.Get("mentionable").(bool)
+		newPermissions = d.Get("permissions").(disgord.PermissionBit)
+	)
 	if _, v := d.GetChange("color"); v.(int) > 0 {
-		color = v.(uint)
+		newColor = v.(int)
 	} else {
-		color = role.Color
+		newColor = int(role.Color)
 	}
-	c := int(color)
+
 	if role, err := client.Guild(serverId).Role(roleId).Update(&disgord.UpdateRole{
-		Name:        d.Get("name").(*string),
-		Color:       &c,
-		Hoist:       d.Get("hoist").(*bool),
-		Mentionable: d.Get("mentionable").(*bool),
-		Permissions: d.Get("permissions").(*disgord.PermissionBit),
+		Name:        &newName,
+		Color:       &newColor,
+		Hoist:       &newHoist,
+		Mentionable: &newMentionable,
+		Permissions: &newPermissions,
 	}); err != nil {
 		return diag.Errorf("Failed to update role %s: %s", d.Id(), err.Error())
 	} else {
