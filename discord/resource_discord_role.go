@@ -204,7 +204,7 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		newColor       int
 		newHoist       = d.Get("hoist").(bool)
 		newMentionable = d.Get("mentionable").(bool)
-		newPermissions = d.Get("permissions").(disgord.PermissionBit)
+		newPermissions = disgord.PermissionBit(d.Get("permissions").(int))
 	)
 	if _, v := d.GetChange("color"); v.(int) > 0 {
 		newColor = v.(int)
