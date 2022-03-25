@@ -21,7 +21,7 @@ resource discord_role moderator {
 * `server_id` (Required) Which server the role will be in
 * `name` (Required) The name of the role
 * `permissions` (Optional) The permission bits of the role
-* `color` (Optional) The integer representation of the role color
+* `color` (Optional) The integer representation of the role color with decimal color code
 * `hoist` (Optional) Whether the role should be hoisted (default false)
 * `mentionable` (Optional) Whether the role should be mentionable (default false)
 * `position` (Optional) The position of the role. This is reverse indexed (@everyone is 0)
