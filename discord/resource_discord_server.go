@@ -10,6 +10,107 @@ import (
 	"golang.org/x/net/context"
 )
 
+func serverSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"server_id": {
+			Type:     schema.TypeString,
+			Computed: true,
+		},
+		"name": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"region": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"verification_level": {
+			Type:     schema.TypeInt,
+			Optional: true,
+			Default:  0,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
+				v := val.(int)
+				if v > 4 || v < 0 {
+					errors = append(errors, fmt.Errorf("verification_level must be between 0 and 4 inclusive, got: %d", v))
+				}
+
+				return
+			},
+		},
+		"explicit_content_filter": {
+			Type:     schema.TypeInt,
+			Optional: true,
+			Default:  0,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
+				v := val.(int)
+				if v > 2 || v < 0 {
+					errors = append(errors, fmt.Errorf("explicit_content_filter must be between 0 and 2 inclusive, got: %d", v))
+				}
+
+				return
+			},
+		},
+		"default_message_notifications": {
+			Type:     schema.TypeInt,
+			Optional: true,
+			Default:  0,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
+				v := val.(int)
+				if v != 0 && v != 1 {
+					errors = append(errors, fmt.Errorf("default_message_notifications must be 0 or 1, got: %d", v))
+				}
+
+				return
+			},
+		},
+		"afk_channel_id": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"afk_timeout": {
+			Type:     schema.TypeInt,
+			Optional: true,
+			Default:  300,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
+				v := val.(int)
+				if v < 0 {
+					errors = append(errors, fmt.Errorf("afk_timeout must be greater than 0, got: %d", v))
+				}
+
+				return
+			},
+		},
+		"icon_url": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"icon_data_uri": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"icon_hash": {
+			Type:     schema.TypeString,
+			Computed: true,
+		},
+		"splash_url": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"splash_data_uri": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"splash_hash": {
+			Type:     schema.TypeString,
+			Computed: true,
+		},
+		"owner_id": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+	}
+}
+
 func resourceDiscordServer() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceServerCreate,
@@ -20,104 +121,21 @@ func resourceDiscordServer() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"server_id": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"region": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"verification_level": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
-					v := val.(int)
-					if v > 4 || v < 0 {
-						errors = append(errors, fmt.Errorf("verification_level must be between 0 and 4 inclusive, got: %d", v))
-					}
+		Schema: serverSchema(),
+	}
+}
 
-					return
-				},
-			},
-			"explicit_content_filter": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
-					v := val.(int)
-					if v > 2 || v < 0 {
-						errors = append(errors, fmt.Errorf("explicit_content_filter must be between 0 and 2 inclusive, got: %d", v))
-					}
-
-					return
-				},
-			},
-			"default_message_notifications": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
-					v := val.(int)
-					if v != 0 && v != 1 {
-						errors = append(errors, fmt.Errorf("default_message_notifications must be 0 or 1, got: %d", v))
-					}
-
-					return
-				},
-			},
-			"afk_channel_id": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"afk_timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  300,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
-					v := val.(int)
-					if v < 0 {
-						errors = append(errors, fmt.Errorf("afk_timeout must be greater than 0, got: %d", v))
-					}
-
-					return
-				},
-			},
-			"icon_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"icon_data_uri": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"icon_hash": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"splash_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"splash_data_uri": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"splash_hash": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"owner_id": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
+func resourceDiscordManagedServer() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: resourceServerManagedCreate,
+		ReadContext:   resourceServerRead,
+		UpdateContext: resourceServerUpdate,
+		DeleteContext: resourceServerManagedDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
 		},
+
+		Schema: serverSchema(),
 	}
 }
 
@@ -205,6 +223,23 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	d.Set("icon_hash", server.Icon)
 	d.Set("splash_hash", server.Splash)
+
+	return diags
+}
+
+func resourceServerManagedCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	serverIdInterface, ok := d.GetOk("server_id")
+	if !ok {
+		return diag.Errorf("Error: server_id must be set")
+	}
+	serverId, ok := serverIdInterface.(string)
+	if !ok {
+		return diag.Errorf("Error: server_id must be a string")
+	}
+
+	d.SetId(serverId)
 
 	return diags
 }
@@ -336,6 +371,14 @@ func resourceServerDelete(ctx context.Context, d *schema.ResourceData, m interfa
 	if err := client.Guild(getId(d.Id())).Delete(); err != nil {
 		return diag.Errorf("Failed to delete server: %s", err)
 	}
+
+	return diags
+}
+
+func resourceServerManagedDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	// noop
 
 	return diags
 }
