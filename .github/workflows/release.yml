@@ -17,7 +17,7 @@ jobs:
       - name: Push tag
         run: git push origin --tags
       - name: Upload CHANGELOG.md
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: changelog
           path: CHANGELOG.md
