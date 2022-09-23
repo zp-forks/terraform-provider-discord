@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Download CHANGELOG.md
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: changelog
       # ここでpullし直さないと、前のjobでのタグを読み込まない
