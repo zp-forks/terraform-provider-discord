@@ -15,4 +15,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actionshub/markdownlint@v2
+      - uses: actionshub/markdownlint@2.0.2
