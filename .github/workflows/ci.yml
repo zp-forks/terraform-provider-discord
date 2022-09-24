@@ -1,17 +1,19 @@
-name: Go
+name: CI
 on:
   push:
-    branches: [ master ]
     paths-ignore:
       - "**/*.md"
       - "LICENSE"
       - ".gitignore"
+      - "CODEOWNERS"
+      - "renovate.json"
   pull_request:
-    branches: [ master ]
     paths-ignore:
       - "**/*.md"
       - "LICENSE"
       - ".gitignore"
+      - "CODEOWNERS"
+      - "renovate.json"
 
 jobs:
   build:
@@ -20,12 +22,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set up Go
         uses: actions/setup-go@v3
-        with:
-          go-version: 1.17
-      - name: Use cache
-        uses: ./.github/actions/go-cache
-        with:
-          cache-ver: v1
+        with: 
+          cache: true
+          go-version-file: go.mod
       - name: Build
         run: go build -v ./...
       - name: Test

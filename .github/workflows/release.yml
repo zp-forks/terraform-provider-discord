@@ -38,7 +38,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17
+          cache: true
+          go-version-file: go.mod
       - name: Import GPG key
         id: import_gpg
         uses: hashicorp/ghaction-import-gpg@v2.1.0
@@ -47,10 +48,6 @@ jobs:
           PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
       - name: Git as GitHub Actions Bot
         uses: Lucky3028/git-as-gha@v1.0.0
-      - name: Use cache
-        uses: ./.github/actions/go-cache
-        with:
-          cache-ver: v1
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v3
         with:
