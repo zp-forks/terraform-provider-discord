@@ -7,7 +7,7 @@ A resource to create a server
 ```hcl-terraform
 resource discord_server my_server {
     name = "My Awesome Server"
-    region = "us-west" 
+    region = "us-west"
 }
 ```
 

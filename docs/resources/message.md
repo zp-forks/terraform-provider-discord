@@ -23,13 +23,13 @@ resource discord_message hello_world {
         footer {
             text = "I'm awesome"
         }
-        
+
         fields {
             name = "foo"
             value = "bar"
             inline = true
         }
-        
+
         fields {
             name = "bar"
             value = "baz"
@@ -57,31 +57,31 @@ Details on arguments can be found [here](https://discord.com/developers/docs/res
 * `timestamp`
 * `color`
 * `footer` (only one allowed)
-    * `text`
-    * `icon_url`
+  * `text`
+  * `icon_url`
 * `image` (only one allowed)
-    * `url`
-    * `height`
-    * `width`
+  * `url`
+  * `height`
+  * `width`
 * `thumbnail` (only one allowed)
-    * `url`
-    * `height`
-    * `width`
+  * `url`
+  * `height`
+  * `width`
 * `video` (only one allowed)
-    * `url`
-    * `height`
-    * `width`
+  * `url`
+  * `height`
+  * `width`
 * `provider` (only one allowed)
-    * `name`
-    * `url`
+  * `name`
+  * `url`
 * `author` (only one allowed)
-    * `name`
-    * `url`
-    * `icon_url`
+  * `name`
+  * `url`
+  * `icon_url`
 * `fields` (multiple allowed)
-    * `name`
-    * `value`
-    * `inline`
+  * `name`
+  * `value`
+  * `inline`
 
 ## Attribute Reference
 
