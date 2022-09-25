@@ -30,7 +30,7 @@ resource discord_role moderator {
 }
 resource discord_channel_permission general_mod {
     type = "role"
-    overwrite_id = discord_role.moderator.id 
+    overwrite_id = discord_role.moderator.id
     allow = data.discord_permission.moderator.allow_bits
     deny = data.discord_permission.moderator.deny_bits
 }
