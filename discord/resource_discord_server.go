@@ -10,16 +10,8 @@ import (
 	"golang.org/x/net/context"
 )
 
-func serverSchema() map[string]*schema.Schema {
+func baseServerSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"server_id": {
-			Type:     schema.TypeString,
-			Computed: true,
-		},
-		"name": {
-			Type:     schema.TypeString,
-			Required: true,
-		},
 		"region": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -111,6 +103,36 @@ func serverSchema() map[string]*schema.Schema {
 	}
 }
 
+func managedServerSchema() map[string]*schema.Schema {
+	res := baseServerSchema()
+
+	res["server_id"] = &schema.Schema{
+		Type:     schema.TypeString,
+		Required: true,
+	}
+	res["name"] = &schema.Schema{
+		Type:     schema.TypeString,
+		Optional: true,
+	}
+
+	return res
+}
+
+func serverSchema() map[string]*schema.Schema {
+	res := baseServerSchema()
+
+	res["server_id"] = &schema.Schema{
+		Type:     schema.TypeString,
+		Computed: true,
+	}
+	res["name"] = &schema.Schema{
+		Type:     schema.TypeString,
+		Required: true,
+	}
+
+	return res
+}
+
 func resourceDiscordServer() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceServerCreate,
@@ -135,7 +157,7 @@ func resourceDiscordManagedServer() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: serverSchema(),
+		Schema: managedServerSchema(),
 	}
 }
 
