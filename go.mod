@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.23.0
 	github.com/polds/imgbase64 v0.0.0-20140820003345-cb7bf37298b7
-	golang.org/x/net v0.0.0-20220923203811-8be639271d50
+	golang.org/x/net v0.0.0-20220930213112-107f3e3c3b0b
 	gopkg.in/go-playground/colors.v1 v1.2.0
 )
 
