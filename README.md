@@ -32,11 +32,3 @@ Check [the GitHubActions file](./.github/workflows/release.yml).
 * discord_color
 * discord_local_image
 * discord_permission
-
-## Todo
-
-### Data Sources
-
-* discord_category_channel
-* discord_text_channel
-* discord_voice_channel
