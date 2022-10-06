@@ -3,4 +3,6 @@
 set -euxo pipefail
 
 go build -o terraform-provider-discord
+
+mkdir -p ~/.terraform.d/plugins/
 cp terraform-provider-discord ~/.terraform.d/plugins/
