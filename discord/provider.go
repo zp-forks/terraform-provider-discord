@@ -26,6 +26,7 @@ func Provider() *schema.Provider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"discord_server":             resourceDiscordServer(),
+			"discord_managed_server":     resourceDiscordManagedServer(),
 			"discord_category_channel":   resourceDiscordCategoryChannel(),
 			"discord_text_channel":       resourceDiscordTextChannel(),
 			"discord_voice_channel":      resourceDiscordVoiceChannel(),
