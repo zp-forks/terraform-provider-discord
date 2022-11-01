@@ -216,7 +216,7 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	afkTimeOut := server.AfkTimeout
 	if v, ok := d.GetOk("afk_timeout"); ok {
-		afkTimeOut = v.(uint)
+		afkTimeOut = v.(int)
 		edit = true
 	}
 	ownerId := server.OwnerID
