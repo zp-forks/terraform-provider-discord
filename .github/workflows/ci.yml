@@ -36,6 +36,7 @@ jobs:
       - name: Test
         run: go test -v ./...
       - uses: actions/upload-artifact@v3
+        if: matrix.os == 'ubuntu-latest'
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.PROVIDER_NAME }}
