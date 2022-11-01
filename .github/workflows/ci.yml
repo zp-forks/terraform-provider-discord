@@ -59,7 +59,8 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}
       - name: Download and move the provider
         env:
-          TERRAFORM_PROVIDER_PATH: ~/.terraform.d/plugins/local/Lucky3028/discord/1.0.0/linux_amd64
+          TERRAFORM_PROVIDER_PATH: ~/.terraform.d/plugins/local/Lucky3028/discord/1.0.0/linux_amd64/
+        working-directory: ../
         run: |
           mkdir -p ${{ env.TERRAFORM_PROVIDER_PATH }}
           mv ${{ env.PROVIDER_NAME }} ${{ env.TERRAFORM_PROVIDER_PATH }}
