@@ -65,8 +65,10 @@ func baseServerSchema() map[string]*schema.Schema {
 			Default:  300,
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
-				if v < 0 {
-					errors = append(errors, fmt.Errorf("afk_timeout must be greater than 0, got: %d", v))
+				// See: https://discord.com/developers/docs/resources/guild#guild-object-guild-structure
+				expected := []int{60, 300, 900, 1800, 3600}
+				if !contains(expected, v) {
+					errors = append(errors, fmt.Errorf("afk_timeout must be set to one of the following values: %d, but got: %d", expected, v))
 				}
 
 				return
@@ -216,7 +218,8 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	afkTimeOut := server.AfkTimeout
 	if v, ok := d.GetOk("afk_timeout"); ok {
-		afkTimeOut = v.(uint)
+		// The value has been already validated, so this cast is safe.
+		afkTimeOut = uint(v.(int))
 		edit = true
 	}
 	ownerId := server.OwnerID
