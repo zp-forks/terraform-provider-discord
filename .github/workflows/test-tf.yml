@@ -40,6 +40,7 @@ jobs:
     needs:
       - build
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TF_API_TOKEN: ${{ secrets.TERRAFORM_CLOUD_API_TOKEN }}
       TF_VAR_discord_bot_token: ${{ secrets.DISCORD_BOT_TOKEN }}
       TF_IN_AUTOMATION: true
