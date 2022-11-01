@@ -54,6 +54,7 @@ jobs:
         run: |
           mkdir -p ${{ env.TERRAFORM_PROVIDER_PATH }}
           mv ${{ env.PROVIDER_NAME }} ${{ env.TERRAFORM_PROVIDER_PATH }}
+      # working-directoryをdefaultsで設定すると、ここでNo such file or directoryとなるので、仕方なくいちいち明示指定する
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
