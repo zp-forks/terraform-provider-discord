@@ -222,23 +222,31 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		afkTimeOut = uint(v.(int))
 		edit = true
 	}
-	ownerId := server.OwnerID
-	if v, ok := d.GetOk("owner_id"); ok {
-		ownerId = disgord.ParseSnowflakeString(v.(string))
-		edit = true
-	}
 
 	if edit {
 		if _, err = client.Guild(server.ID).Update(&disgord.UpdateGuild{
 			Splash:       &splash,
 			AFKChannelID: &afkChannel,
-			OwnerID:      &ownerId,
 		}); err != nil {
 			return diag.Errorf("Failed to edit server: %s", err.Error())
 		}
 		// FIXME: AFKTimeout doesn't exist in UpdateGuild struct.
 		if _, err = client.Guild(server.ID).UpdateBuilder().SetAfkTimeout(int(afkTimeOut)).Execute(); err != nil {
 			return diag.Errorf("Failed to edit server: %s", err.Error())
+		}
+	}
+
+	// Update owner's ID if the specified one is not as same as default,
+	// because we will receive "User is already owner" error if update to the same one.
+	if v, ok := d.GetOk("owner_id"); ok {
+		newOwnerId := disgord.ParseSnowflakeString(v.(string))
+
+		if server.OwnerID != newOwnerId {
+			if _, err = client.Guild(server.ID).Update(&disgord.UpdateGuild{
+				OwnerID: &newOwnerId,
+			}); err != nil {
+				return diag.Errorf("Failed to edit server: %s", err.Error())
+			}
 		}
 	}
 
