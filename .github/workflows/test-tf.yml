@@ -43,6 +43,7 @@ jobs:
       TF_API_TOKEN: ${{ secrets.TERRAFORM_CLOUD_API_TOKEN }}
       TF_VAR_discord_bot_token: ${{ secrets.DISCORD_BOT_TOKEN }}
       TF_IN_AUTOMATION: true
+      IS_PUSH_TO_MASTER: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
@@ -80,6 +81,20 @@ jobs:
           commenter_input: ${{ format('{0}{1}', steps.plan.outputs.stdout, steps.plan.outputs.stderr) }}
           commenter_exitcode: ${{ steps.plan.outputs.exitcode }}
       - name: Apply
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        if: ${{ env.IS_PUSH_TO_MASTER }}
         run: terraform apply -input=false -auto-approve
         working-directory: examples
+      - uses: Lucky3028/git-as-gha@v1.0.0
+        if: ${{ env.IS_PUSH_TO_MASTER }}
+      - name: Commit terraform state changes
+        if: ${{ env.IS_PUSH_TO_MASTER }}
+        run: |
+          git add .
+          git commit -m "chore: update Terraform states [skip ci]"
+      - name: Push
+        uses: CasperWA/push-protected@v2
+        if: ${{ env.IS_PUSH_TO_MASTER }}
+        with:
+          token: ${{ secrets.PAT_PUSH_TO_MASTER }}
+          branch: main
+          unprotect_reviews: true
