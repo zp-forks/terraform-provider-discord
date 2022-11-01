@@ -93,5 +93,5 @@ jobs:
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         with:
           token: ${{ secrets.PAT_PUSH_TO_MASTER }}
-          branch: main
+          branch: master
           unprotect_reviews: true
