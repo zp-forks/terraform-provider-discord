@@ -53,6 +53,7 @@ jobs:
           TERRAFORM_PROVIDER_PATH: ~/.terraform.d/plugins/local/Lucky3028/discord/1.0.0/linux_amd64/
         run: |
           mkdir -p ${{ env.TERRAFORM_PROVIDER_PATH }}
+          chmod +x ${{ env.PROVIDER_NAME }}
           mv ${{ env.PROVIDER_NAME }} ${{ env.TERRAFORM_PROVIDER_PATH }}
       # working-directoryをdefaultsで設定すると、ここでNo such file or directoryとなるので、仕方なくいちいち明示指定する
       - uses: hashicorp/setup-terraform@v2
