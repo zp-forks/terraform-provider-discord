@@ -1,19 +1,17 @@
 name: CI
 on:
   push:
-    paths-ignore:
-      - "**/*.md"
-      - "LICENSE"
-      - ".gitignore"
-      - "CODEOWNERS"
-      - "renovate.json"
+    paths:
+      - "**/*.go"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/ci.yml"
   pull_request:
-    paths-ignore:
-      - "**/*.md"
-      - "LICENSE"
-      - ".gitignore"
-      - "CODEOWNERS"
-      - "renovate.json"
+    paths:
+      - "**/*.go"
+      - "go.mod"
+      - "go.sum"
+      - ".github/workflows/ci.yml"
 
 jobs:
   build:
