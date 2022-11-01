@@ -1,6 +1,6 @@
 # Discord Provider
 
-This is a fork of [aequasi/terraform-provider-discord](https://github.com/aequasi/terraform-provider-discord) and [Chaotic-Logic/terraform-provider-discord](https://github.com/Chaotic-Logic/terraform-provider-discord).
+This is a fork of [Chaotic-Logic/terraform-provider-discord](https://github.com/Chaotic-Logic/terraform-provider-discord).
 
 The Discord provider is used to interact with the Discord API. It requires proper credentials before it can be used.
 
