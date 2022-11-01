@@ -284,8 +284,8 @@ func resourceChannelUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		}
 	case "voice":
 		{
-			bitRate = map[bool]uint{true: d.Get("bitrate").(uint), false: channel.Bitrate}[d.HasChange("bitrate")]
-			userLimit = map[bool]uint{true: d.Get("user_limit").(uint), false: channel.UserLimit}[d.HasChange("user_limit")]
+			bitRate = map[bool]uint{true: uint(d.Get("bitrate").(int)), false: channel.Bitrate}[d.HasChange("bitrate")]
+			userLimit = map[bool]uint{true: uint(d.Get("user_limit").(int)), false: channel.UserLimit}[d.HasChange("user_limit")]
 		}
 	}
 
