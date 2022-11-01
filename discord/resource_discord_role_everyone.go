@@ -72,8 +72,9 @@ func resourceRoleEveryoneUpdate(ctx context.Context, d *schema.ResourceData, m i
 
 	serverId := getId(d.Get("server_id").(string))
 	d.SetId(serverId.String())
+	newPermission := disgord.PermissionBit(d.Get("permissions").(int))
 	if role, err := client.Guild(serverId).Role(serverId).Update(&disgord.UpdateRole{
-		Permissions: d.Get("permissions").(*disgord.PermissionBit),
+		Permissions: &newPermission,
 	}); err != nil {
 		return diag.Errorf("Failed to update role %s: %s", d.Id(), err.Error())
 	} else {
