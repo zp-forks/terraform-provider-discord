@@ -14,11 +14,12 @@ func Hashcode(s string) int {
 	return 0
 }
 
-func contains(arr [3]string, str string) bool {
-	for _, a := range arr {
-		if a == str {
+func contains[T comparable](array []T, value T) bool {
+	for _, elem := range array {
+		if elem == value {
 			return true
 		}
 	}
+
 	return false
 }

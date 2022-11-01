@@ -81,7 +81,7 @@ func dataSourceDiscordPermission() *schema.Resource {
 			Default:  "unset",
 			ValidateDiagFunc: func(v interface{}, path cty.Path) (diags diag.Diagnostics) {
 				str := v.(string)
-				allowed := [3]string{"allow", "unset", "deny"}
+				allowed := []string{"allow", "unset", "deny"}
 
 				if contains(allowed, str) {
 					return diags
