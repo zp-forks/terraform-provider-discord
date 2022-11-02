@@ -60,39 +60,8 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
-      - name: Format
-        run: terraform fmt -check
-        working-directory: examples
       - name: Init
         run: terraform init
         working-directory: examples
-      - name: Validate
-        run: terraform validate
+      - run: terraform destroy -input=false -auto-approve
         working-directory: examples
-      - name: Plan
-        run: terraform plan -input=false -no-color
-        id: plan
-        working-directory: examples
-      - name: Comment plan result to PR
-        uses: robburger/terraform-pr-commenter@v1
-        if: always() && github.ref != 'refs/heads/master' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
-        with:
-          commenter_type: plan
-          commenter_input: ${{ format('{0}{1}', steps.plan.outputs.stdout, steps.plan.outputs.stderr) }}
-          commenter_exitcode: ${{ steps.plan.outputs.exitcode }}
-      - name: Apply
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: terraform apply -input=false -auto-approve
-        working-directory: examples
-      - uses: Lucky3028/git-as-gha@v1.0.0
-      - name: Commit terraform state changes
-        run: |
-          git add .
-          git commit -m "chore: update Terraform states [skip ci]"
-      - name: Push
-        uses: CasperWA/push-protected@v2
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        with:
-          token: ${{ secrets.PAT_PUSH_TO_MASTER }}
-          branch: master
-          unprotect_reviews: true
