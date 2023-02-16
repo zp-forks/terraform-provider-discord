@@ -10,7 +10,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Git as GitHub Actions Bot
-        uses: Lucky3028/git-as-gha@v1.0.0
+        uses: Lucky3028/git-as-gha@v1.0.1
       - name: Install standard-version
         run: npm install -g standard-version@v9.3.2
       - name: Generate changelog
@@ -49,7 +49,7 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
       - name: Git as GitHub Actions Bot
-        uses: Lucky3028/git-as-gha@v1.0.0
+        uses: Lucky3028/git-as-gha@v1.0.1
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
