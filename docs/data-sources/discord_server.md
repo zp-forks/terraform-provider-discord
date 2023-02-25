@@ -1,4 +1,4 @@
-# Discord Role Data Source
+# Discord Server Data Source
 
 Fetches a server's information.
 
