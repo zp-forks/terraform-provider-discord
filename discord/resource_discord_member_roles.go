@@ -92,7 +92,7 @@ func resourceMemberRolesRead(ctx context.Context, d *schema.ResourceData, m inte
 
 	// parse server ID and userID out of the ID:
 	var serverId, userId snowflake.Snowflake
-	sId, uId, err := parseTwoPartId(d.Id())
+	sId, uId, err := parseTwoIds(d.Id())
 	if err != nil {
 		log.Default().Printf("Unable to parse IDs out of the resource ID. Falling back on legacy config behavior.")
 		serverId = getId(d.Get("server_id").(string))
