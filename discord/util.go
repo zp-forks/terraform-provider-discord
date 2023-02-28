@@ -1,8 +1,6 @@
 package discord
 
-import (
-	"hash/crc32"
-)
+import "hash/crc32"
 
 func Hashcode(s string) int {
 	v := int(crc32.ChecksumIEEE([]byte(s)))
