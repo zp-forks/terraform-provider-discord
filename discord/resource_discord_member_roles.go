@@ -2,10 +2,10 @@ package discord
 
 import (
 	"encoding/json"
-	"fmt"
-	"strconv"
+	"log"
 
 	"github.com/andersfylling/disgord"
+	"github.com/andersfylling/snowflake/v5"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -37,10 +37,12 @@ func resourceDiscordMemberRoles() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"user_id": {
 				Type:     schema.TypeString,
+				ForceNew: true,
 				Required: true,
 			},
 			"server_id": {
 				Type:     schema.TypeString,
+				ForceNew: true,
 				Required: true,
 			},
 			"role": {
@@ -76,7 +78,7 @@ func resourceMemberRolesCreate(ctx context.Context, d *schema.ResourceData, m in
 		return diag.Errorf("Could not get member %s in %s: %s", userId.String(), serverId.String(), err.Error())
 	}
 
-	d.SetId(strconv.Itoa(Hashcode(fmt.Sprintf("%s:%s", serverId.String(), userId.String()))))
+	d.SetId(generateTwoPartId(serverId.String(), userId.String()))
 
 	diags = append(diags, resourceMemberRolesRead(ctx, d, m)...)
 	diags = append(diags, resourceMemberRolesUpdate(ctx, d, m)...)
@@ -87,8 +89,18 @@ func resourceMemberRolesCreate(ctx context.Context, d *schema.ResourceData, m in
 func resourceMemberRolesRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := m.(*Context).Client
-	serverId := getId(d.Get("server_id").(string))
-	userId := getId(d.Get("user_id").(string))
+
+	// parse server ID and userID out of the ID:
+	var serverId, userId snowflake.Snowflake
+	sId, uId, err := parseTwoPartId(d.Id())
+	if err != nil {
+		log.Default().Printf("Unable to parse IDs out of the resource ID. Falling back on legacy config behavior.")
+		serverId = getId(d.Get("server_id").(string))
+		userId = getId(d.Get("user_id").(string))
+	} else {
+		serverId = getId(sId)
+		userId = getId(uId)
+	}
 
 	member, err := client.Guild(serverId).Member(userId).Get()
 	if err != nil {
