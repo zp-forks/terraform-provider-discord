@@ -1,6 +1,6 @@
 # Discord Terraform Provider
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Lucky3028/terraform-provider-discord/Go?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Lucky3028/terraform-provider-discord/ci.yml?branch=master&style=for-the-badge)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/Lucky3028/terraform-provider-discord?style=for-the-badge)
 
 This is a fork of [Chaotic-Logic/terraform-provider-discord](https://github.com/Chaotic-Logic/terraform-provider-discord).
