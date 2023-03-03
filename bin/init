@@ -3,4 +3,5 @@
 set -euxo pipefail
 
 ./bin/build
+rm -rf .terraform.lock.hcl || :
 terraform init -plugin-dir $HOME/.terraform.d/plugins
