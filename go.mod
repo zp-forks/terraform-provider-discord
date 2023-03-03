@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/andersfylling/disgord v0.35.1
+	github.com/andersfylling/snowflake/v5 v5.0.1
 	github.com/bwmarrin/discordgo v0.27.0
 	github.com/hashicorp/go-cty v1.4.1-0.20200723130312-85980079f637
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.25.0
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/andersfylling/snowflake/v5 v5.0.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
