@@ -1,47 +1,30 @@
 name: Release
 on:
   workflow_dispatch:
+    inputs:
+      new_version:
+        description: New version number without prefix. (e.g. "1.1.0", "2.0.0", and more)
+        type: string
+        required: true
 jobs:
-  changelog:
-    name: Generate changelog
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Git as GitHub Actions Bot
-        uses: Lucky3028/git-as-gha@v1.0.1
-      - name: Install standard-version
-        run: npm install -g standard-version@v9.3.2
-      - name: Generate changelog
-        run: standard-version
-      - name: Push tag
-        run: git push origin --tags
-      - name: Upload CHANGELOG.md
-        uses: actions/upload-artifact@v3
-        with:
-          name: changelog
-          path: CHANGELOG.md
   goreleaser:
     name: Make a release on GitHub
     runs-on: ubuntu-latest
-    needs:
-      - changelog
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Download CHANGELOG.md
-        uses: actions/download-artifact@v3
-        with:
-          name: changelog
-      # ここでpullし直さないと、前のjobでのタグを読み込まない
-      - run: git pull origin ${GITHUB_REF#refs/heads/}
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           cache: true
           go-version-file: go.mod
+      - name: Add tag and push it
+        env:
+          NEW_VERSION: ${{ github.event.inputs.new_version }}
+        run: |
+          git tag v"$NEW_VERSION"
+          git tag push origin v"$NEW_VERSION"
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v5.2.0
@@ -54,7 +37,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --rm-dist --release-notes CHANGELOG.md
+          args: release --rm-dist
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
