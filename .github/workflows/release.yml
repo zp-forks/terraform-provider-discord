@@ -24,7 +24,7 @@ jobs:
           NEW_VERSION: ${{ github.event.inputs.new_version }}
         run: |
           git tag v"$NEW_VERSION"
-          git tag push origin v"$NEW_VERSION"
+          git push origin v"$NEW_VERSION"
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v5.2.0
