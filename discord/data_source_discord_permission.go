@@ -113,8 +113,8 @@ func dataSourceDiscordPermissionRead(_ context.Context, d *schema.ResourceData, 
 	}
 
 	d.SetId(strconv.Itoa(Hashcode(fmt.Sprintf("%d:%d", allowBits, denyBits))))
-	d.Set("allow_bits", allowBits|(d.Get("allow_extends").(int64)))
-	d.Set("deny_bits", denyBits|(d.Get("deny_extends").(int64)))
+	d.Set("allow_bits", allowBits|(int64(d.Get("allow_extends").(int))))
+	d.Set("deny_bits", denyBits|(int64(d.Get("deny_extends").(int))))
 
 	return diags
 }
