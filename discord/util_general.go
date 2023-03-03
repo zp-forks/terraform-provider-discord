@@ -17,6 +17,11 @@ func parseTwoIds(id string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
+// Helper function for generating a two part ID
+func generateTwoPartId(one string, two string) string {
+	return fmt.Sprintf("%s:%s", one, two)
+}
+
 func getId(v string) disgord.Snowflake {
 	return disgord.ParseSnowflakeString(v)
 }
