@@ -1,2 +1,8 @@
 CHANGELOG.md
 terraform-provider-discord
+*.tf
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+
+.terraform/

@@ -3,4 +3,4 @@
 set -euxo pipefail
 
 ./bin/build
-terraform init
+terraform init -plugin-dir $HOME/.terraform.d/plugins
