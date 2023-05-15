@@ -1,6 +1,6 @@
 module github.com/lucky3028/discord-terraform
 
-go 1.19
+go 1.20
 
 require (
 	github.com/andersfylling/disgord v0.35.1
