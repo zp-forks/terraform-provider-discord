@@ -38,6 +38,7 @@ func Provider() *schema.Provider {
 			"discord_member_roles":       resourceDiscordMemberRoles(),
 			"discord_message":            resourceDiscordMessage(),
 			"discord_system_channel":     resourceDiscordSystemChannel(),
+			"discord_webhook":            resourceDiscordWebhook(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
