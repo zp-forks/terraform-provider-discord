@@ -34,7 +34,7 @@ jobs:
       - name: Git as GitHub Actions Bot
         uses: Lucky3028/git-as-gha@v1.0.1
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
           args: release --clean
