@@ -32,7 +32,6 @@ func parseThreeIds(id string) (string, string, string, error) {
 	return parts[0], parts[1], parts[2], nil
 }
 
-// Helper function for generating a two part ID
 func generateThreePartId(one string, two string, three string) string {
 	return fmt.Sprintf("%s:%s:%s", one, two, three)
 }
