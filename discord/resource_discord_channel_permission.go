@@ -106,7 +106,7 @@ func resourceChannelPermissionRead(ctx context.Context, d *schema.ResourceData, 
 
 	channel, err := client.Channel(channelId).Get()
 	if err != nil {
-		return diag.Errorf("!!!NEW Failed to find channel %s: %s", channelId.String(), err.Error())
+		return diag.Errorf("Failed to find channel %s: %s", channelId.String(), err.Error())
 	}
 
 	for _, x := range channel.PermissionOverwrites {
