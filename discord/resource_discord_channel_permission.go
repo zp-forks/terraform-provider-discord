@@ -5,6 +5,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"strconv"
 
+	"log"
+
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -73,14 +75,8 @@ func resourceChannelPermissionCreate(ctx context.Context, d *schema.ResourceData
 		d.Get("deny").(int64), discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to update channel permissions %s: %s", channelId, err.Error())
 	} else {
-		d.SetId(strconv.Itoa(
-			Hashcode(
-				fmt.Sprintf(
-					"%s:%s:%s", channelId, overwriteId, d.Get("type").(string),
-					),
-				),
-			),
-		)
+		d.SetId(generateThreePartId(channelId, overwriteId, d.Get("type").(string)))
+
 		return diags
 	}
 }
@@ -91,13 +87,28 @@ func resourceChannelPermissionRead(ctx context.Context, d *schema.ResourceData, 
 
 	channelId := d.Get("channel_id").(string)
 	overwriteId := d.Get("overwrite_id").(string)
+	var permissionType discordgo.PermissionOverwriteType
+
+	cId, oId, pt, err := parseThreeIds(d.Id())
+	if err != nil {
+		log.Default().Printf("Unable to parse IDs out of the resource ID. Falling back on legacy config behavior.")
+		channelId = d.Get("channel_id").(string)
+		overwriteId = d.Get("overwrite_id").(string)
+		permissionType, _ = getDiscordChannelPermissionType(d.Get("type").(string))
+	} else {
+		channelId = cId
+		overwriteId = oId
+		permissionType, _ = getDiscordChannelPermissionType(pt)
+
+		d.Set("channel_id", channelId)
+		d.Set("overwrite_id", overwriteId)
+		d.Set("type", pt)
+	}
 
 	channel, err := client.Channel(channelId, discordgo.WithContext(ctx))
 	if err != nil {
 		return diag.Errorf("Failed to find channel %s: %s", channelId, err.Error())
 	}
-
-	permissionType, _ := getDiscordChannelPermissionType(d.Get("type").(string))
 
 	for _, x := range channel.PermissionOverwrites {
 		if uint(x.Type) == uint(permissionType) && x.ID == overwriteId {
