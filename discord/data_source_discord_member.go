@@ -2,8 +2,8 @@ package discord
 
 import (
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 
-	"github.com/andersfylling/disgord"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -66,27 +66,27 @@ func dataSourceDiscordMember() *schema.Resource {
 
 func dataSourceMemberRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var member *disgord.Member
+	var member *discordgo.Member
 	var memberErr error
-	client := m.(*Context).Client
-	serverId := getId(d.Get("server_id").(string))
+	client := m.(*Context).Session
+	serverId := d.Get("server_id").(string)
 
 	if v, ok := d.GetOk("user_id"); ok {
-		member, memberErr = client.Guild(serverId).Member(getId(v.(string))).Get()
+
+		member, memberErr = client.GuildMember(serverId, v.(string), discordgo.WithContext(ctx))
 	}
 
 	if v, ok := d.GetOk("username"); ok {
 		username := v.(string)
 		discriminator := d.Get("discriminator").(string)
-
-		members, err := client.Guild(serverId).GetMembers(&disgord.GetMembers{Limit: 0})
+		members, err := client.GuildMembersSearch(serverId, username, 1, discordgo.WithContext(ctx))
 		if err != nil {
-			return diag.Errorf("Failed to fetch members for %s: %s", serverId.String(), err.Error())
+			return diag.Errorf("Failed to fetch members for %s: %s", serverId, err.Error())
 		}
 
 		memberErr = fmt.Errorf("failed to find member by name#discriminator: %s#%s", username, discriminator)
 		for _, m := range members {
-			if m.User.Username == username && m.User.Discriminator.String() == discriminator {
+			if m.User.Username == username && m.User.Discriminator == discriminator {
 				member = m
 				memberErr = nil
 				break
@@ -108,10 +108,10 @@ func dataSourceMemberRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	roles := make([]string, 0, len(member.Roles))
 	for _, r := range member.Roles {
-		roles = append(roles, r.String())
+		roles = append(roles, r)
 	}
 
-	d.SetId(member.User.ID.String())
+	d.SetId(member.User.ID)
 	d.Set("joined_at", member.JoinedAt.String())
 	d.Set("premium_since", member.PremiumSince.String())
 	d.Set("roles", roles)

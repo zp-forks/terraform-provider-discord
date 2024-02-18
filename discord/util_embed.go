@@ -2,48 +2,38 @@ package discord
 
 import (
 	"encoding/json"
-	"time"
-
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 )
 
 type UnmappedEmbed struct {
-	Title       string                    `json:"title,omitempty"`       // title of embed
-	Description string                    `json:"description,omitempty"` // description of embed
-	URL         string                    `json:"url,omitempty"`         // url of embed
-	Timestamp   string                    `json:"timestamp,omitempty"`   // timestamp	timestamp of embed content
-	Color       int                       `json:"color,omitempty"`       // color code of the embed
-	Footer      []*disgord.EmbedFooter    `json:"footer,omitempty"`      // embed footer object	footer information
-	Image       []*disgord.EmbedImage     `json:"image,omitempty"`       // embed image object	image information
-	Thumbnail   []*disgord.EmbedThumbnail `json:"thumbnail,omitempty"`   // embed thumbnail object	thumbnail information
-	Video       []*disgord.EmbedVideo     `json:"video,omitempty"`       // embed video object	video information
-	Provider    []*disgord.EmbedProvider  `json:"provider,omitempty"`    // embed provider object	provider information
-	Author      []*disgord.EmbedAuthor    `json:"author,omitempty"`      // embed author object	author information
-	Fields      []*disgord.EmbedField     `json:"fields,omitempty"`      //	array of embed field objects	fields information
+	Title       string                             `json:"title,omitempty"`       // title of embed
+	Description string                             `json:"description,omitempty"` // description of embed
+	URL         string                             `json:"url,omitempty"`         // url of embed
+	Timestamp   string                             `json:"timestamp,omitempty"`   // timestamp	timestamp of embed content
+	Color       int                                `json:"color,omitempty"`       // color code of the embed
+	Footer      []*discordgo.MessageEmbedFooter    `json:"footer,omitempty"`      // embed footer object	footer information
+	Image       []*discordgo.MessageEmbedImage     `json:"image,omitempty"`       // embed image object	image information
+	Thumbnail   []*discordgo.MessageEmbedThumbnail `json:"thumbnail,omitempty"`   // embed thumbnail object	thumbnail information
+	Video       []*discordgo.MessageEmbedVideo     `json:"video,omitempty"`       // embed video object	video information
+	Provider    []*discordgo.MessageEmbedProvider  `json:"provider,omitempty"`    // embed provider object	provider information
+	Author      []*discordgo.MessageEmbedAuthor    `json:"author,omitempty"`      // embed author object	author information
+	Fields      []*discordgo.MessageEmbedField     `json:"fields,omitempty"`      //	array of embed field objects	fields information
 }
 
-func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
+func buildEmbed(embedList []interface{}) (*discordgo.MessageEmbed, error) {
 	embedMap := embedList[0].(map[string]interface{})
 
-	var time disgord.Time
-	if embedMap["timestamp"].(string) != "" {
-		err := time.UnmarshalText([]byte(embedMap["timestamp"].(string)))
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	embed := &disgord.Embed{
+	embed := &discordgo.MessageEmbed{
 		Title:       embedMap["title"].(string),
 		Description: embedMap["description"].(string),
 		URL:         embedMap["url"].(string),
 		Color:       embedMap["color"].(int),
-		Timestamp:   time,
+		Timestamp:   embedMap["timestamp"].(string),
 	}
 
 	if len(embedMap["footer"].([]interface{})) > 0 {
 		footerMap := embedMap["footer"].([]interface{})[0].(map[string]interface{})
-		embed.Footer = &disgord.EmbedFooter{
+		embed.Footer = &discordgo.MessageEmbedFooter{
 			Text:    footerMap["text"].(string),
 			IconURL: footerMap["icon_url"].(string),
 		}
@@ -51,7 +41,7 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 
 	if len(embedMap["image"].([]interface{})) > 0 {
 		imageMap := embedMap["image"].([]interface{})[0].(map[string]interface{})
-		embed.Image = &disgord.EmbedImage{
+		embed.Image = &discordgo.MessageEmbedImage{
 			URL:    imageMap["url"].(string),
 			Width:  imageMap["width"].(int),
 			Height: imageMap["height"].(int),
@@ -60,7 +50,7 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 
 	if len(embedMap["thumbnail"].([]interface{})) > 0 {
 		thumbnailMap := embedMap["thumbnail"].([]interface{})[0].(map[string]interface{})
-		embed.Thumbnail = &disgord.EmbedThumbnail{
+		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
 			URL:    thumbnailMap["url"].(string),
 			Width:  thumbnailMap["width"].(int),
 			Height: thumbnailMap["height"].(int),
@@ -69,7 +59,7 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 
 	if len(embedMap["video"].([]interface{})) > 0 {
 		videoMap := embedMap["video"].([]interface{})[0].(map[string]interface{})
-		embed.Video = &disgord.EmbedVideo{
+		embed.Video = &discordgo.MessageEmbedVideo{
 			URL:    videoMap["url"].(string),
 			Width:  videoMap["width"].(int),
 			Height: videoMap["height"].(int),
@@ -78,7 +68,7 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 
 	if len(embedMap["provider"].([]interface{})) > 0 {
 		providerMap := embedMap["provider"].([]interface{})[0].(map[string]interface{})
-		embed.Provider = &disgord.EmbedProvider{
+		embed.Provider = &discordgo.MessageEmbedProvider{
 			URL:  providerMap["url"].(string),
 			Name: providerMap["name"].(string),
 		}
@@ -86,7 +76,7 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 
 	if len(embedMap["author"].([]interface{})) > 0 {
 		authorMap := embedMap["author"].([]interface{})[0].(map[string]interface{})
-		embed.Author = &disgord.EmbedAuthor{
+		embed.Author = &discordgo.MessageEmbedAuthor{
 			Name:    authorMap["name"].(string),
 			URL:     authorMap["url"].(string),
 			IconURL: authorMap["icon_url"].(string),
@@ -96,7 +86,7 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 	for _, field := range embedMap["fields"].([]interface{}) {
 		fieldMap := field.(map[string]interface{})
 
-		embed.Fields = append(embed.Fields, &disgord.EmbedField{
+		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:   fieldMap["name"].(string),
 			Value:  fieldMap["value"].(string),
 			Inline: fieldMap["inline"].(bool),
@@ -106,40 +96,35 @@ func buildEmbed(embedList []interface{}) (*disgord.Embed, error) {
 	return embed, nil
 }
 
-func unbuildEmbed(embed *disgord.Embed) []interface{} {
+func unbuildEmbed(embed *discordgo.MessageEmbed) []interface{} {
 	var ret interface{}
-
-	var timestamp string
-	if !embed.Timestamp.IsZero() {
-		timestamp = embed.Timestamp.Format(time.RFC3339)
-	}
 
 	e := &UnmappedEmbed{
 		Title:       embed.Title,
 		Description: embed.Description,
 		URL:         embed.URL,
-		Timestamp:   timestamp,
+		Timestamp:   embed.Timestamp,
 		Color:       embed.Color,
 		Fields:      embed.Fields,
 	}
 
 	if embed.Footer != nil {
-		e.Footer = []*disgord.EmbedFooter{embed.Footer}
+		e.Footer = []*discordgo.MessageEmbedFooter{embed.Footer}
 	}
 	if embed.Image != nil {
-		e.Image = []*disgord.EmbedImage{embed.Image}
+		e.Image = []*discordgo.MessageEmbedImage{embed.Image}
 	}
 	if embed.Thumbnail != nil {
-		e.Thumbnail = []*disgord.EmbedThumbnail{embed.Thumbnail}
+		e.Thumbnail = []*discordgo.MessageEmbedThumbnail{embed.Thumbnail}
 	}
 	if embed.Video != nil {
-		e.Video = []*disgord.EmbedVideo{embed.Video}
+		e.Video = []*discordgo.MessageEmbedVideo{embed.Video}
 	}
 	if embed.Provider != nil {
-		e.Provider = []*disgord.EmbedProvider{embed.Provider}
+		e.Provider = []*discordgo.MessageEmbedProvider{embed.Provider}
 	}
 	if embed.Author != nil {
-		e.Author = []*disgord.EmbedAuthor{embed.Author}
+		e.Author = []*discordgo.MessageEmbedAuthor{embed.Author}
 	}
 
 	j, _ := json.MarshalIndent(e, "", "    ")

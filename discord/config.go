@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 )
 
 type Config struct {
@@ -16,11 +16,12 @@ type Config struct {
 }
 
 type Context struct {
-	Client *disgord.Client
+	Session *discordgo.Session
+	//Client  *disgord.Client
 	Config *Config
 }
 
-// This type implements the http.RoundTripper interface
+// LimitedRoundTripper This type implements the http.RoundTripper interface
 type LimitedRoundTripper struct {
 	Proxied http.RoundTripper
 }
@@ -48,11 +49,16 @@ func (lrt LimitedRoundTripper) RoundTrip(req *http.Request) (res *http.Response,
 }
 
 func (c *Config) Client() (*Context, error) {
-	httpClient := &http.Client{Transport: LimitedRoundTripper{http.DefaultTransport}}
-	client := disgord.New(disgord.Config{
-		BotToken:   c.Token,
-		HTTPClient: httpClient,
-	})
+	//httpClient := &http.Client{Transport: LimitedRoundTripper{http.DefaultTransport}}
+	//client := disgord.New(disgord.Config{
+	//	BotToken:   c.Token,
+	//	HTTPClient: httpClient,
+	//})
+	session, err := discordgo.New(c.Token)
+	if err != nil {
+		return nil, err
+	}
 
-	return &Context{Client: client, Config: c}, nil
+	//return &Context{Client: client, Config: c, Session: session}, nil
+	return &Context{Config: c, Session: session}, nil
 }

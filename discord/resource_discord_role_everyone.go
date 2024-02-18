@@ -1,7 +1,7 @@
 package discord
 
 import (
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -40,24 +40,19 @@ func resourceDiscordRoleEveryone() *schema.Resource {
 
 func resourceRoleEveryoneImport(ctx context.Context, data *schema.ResourceData, i interface{}) ([]*schema.ResourceData, error) {
 	data.SetId(data.Id())
-	data.Set("server_id", getId(data.Id()).String())
+	data.Set("server_id", data.Id())
 
 	return schema.ImportStatePassthroughContext(ctx, data, i)
 }
 
 func resourceRoleEveryoneRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := getId(d.Get("server_id").(string))
-	d.SetId(serverId.String())
+	serverId := d.Get("server_id").(string)
+	d.SetId(serverId)
 
-	server, err := client.Guild(serverId).Get()
-	if err != nil {
-		return diag.Errorf("Failed to fetch server %s: %s", serverId.String(), err.Error())
-	}
-
-	if role, err := server.Role(serverId); err != nil {
+	if role, err := getRole(ctx, client, serverId, serverId); err != nil {
 		return diag.Errorf("Failed to fetch role %s: %s", d.Id(), err.Error())
 	} else {
 		d.Set("permissions", role.Permissions)
@@ -68,14 +63,15 @@ func resourceRoleEveryoneRead(ctx context.Context, d *schema.ResourceData, m int
 
 func resourceRoleEveryoneUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := getId(d.Get("server_id").(string))
-	d.SetId(serverId.String())
-	newPermission := disgord.PermissionBit(d.Get("permissions").(int))
-	if role, err := client.Guild(serverId).Role(serverId).Update(&disgord.UpdateRole{
+	serverId := d.Get("server_id").(string)
+	d.SetId(serverId)
+	newPermission := d.Get("permissions").(int64)
+
+	if role, err := client.GuildRoleEdit(serverId, serverId, &discordgo.RoleParams{
 		Permissions: &newPermission,
-	}); err != nil {
+	}, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to update role %s: %s", d.Id(), err.Error())
 	} else {
 		d.Set("permissions", role.Permissions)

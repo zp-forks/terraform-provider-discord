@@ -1,7 +1,7 @@
 package discord
 
 import (
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/polds/imgbase64"
@@ -67,9 +67,9 @@ func resourceDiscordWebhook() *schema.Resource {
 
 func resourceWebhookCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	channelId := getId(d.Get("channel_id").(string))
+	channelId := d.Get("channel_id").(string)
 
 	avatar := ""
 	if v, ok := d.GetOk("avatar_url"); ok {
@@ -79,15 +79,12 @@ func resourceWebhookCreate(ctx context.Context, d *schema.ResourceData, m interf
 		avatar = v.(string)
 	}
 
-	if webhook, err := client.Channel(channelId).CreateWebhook(&disgord.CreateWebhook{
-		Name:   d.Get("name").(string),
-		Avatar: avatar,
-	}); err != nil {
+	if webhook, err := client.WebhookCreate(channelId, d.Get("name").(string), avatar, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to create webhook: %s", err.Error())
 	} else {
-		url := "https://discord.com/api/webhooks/" + webhook.ID.String() + "/" + webhook.Token
+		url := "https://discord.com/api/webhooks/" + webhook.ID + "/" + webhook.Token
 
-		d.SetId(webhook.ID.String())
+		d.SetId(webhook.ID)
 		d.Set("avatar_hash", webhook.Avatar)
 		d.Set("token", webhook.Token)
 		d.Set("url", url)
@@ -100,14 +97,14 @@ func resourceWebhookCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	if webhook, err := client.Webhook(getId(d.Id())).Get(); err != nil {
+	if webhook, err := client.Webhook(d.Id(), discordgo.WithContext(ctx)); err != nil {
 		d.SetId("")
 	} else {
-		url := "https://discord.com/api/webhooks/" + webhook.ID.String() + "/" + webhook.Token
+		url := "https://discord.com/api/webhooks/" + webhook.ID + "/" + webhook.Token
 
-		d.Set("channel_id", webhook.ChannelID.String())
+		d.Set("channel_id", webhook.ChannelID)
 		d.Set("name", webhook.Name)
 		d.Set("avatar_hash", webhook.Avatar)
 		d.Set("token", webhook.Token)
@@ -121,9 +118,9 @@ func resourceWebhookRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	channelId := getId(d.Get("channel_id").(string))
+	channelId := d.Get("channel_id").(string)
 	name := d.Get("name").(string)
 
 	avatar := ""
@@ -134,16 +131,11 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		avatar = v.(string)
 	}
 
-	if webhook, err := client.Webhook(getId(d.Id())).Update(&disgord.UpdateWebhook{
-		ChannelID: &channelId,
-		Name:      &name,
-		Avatar:    &avatar,
-	}); err != nil {
+	if webhook, err := client.WebhookEdit(d.Id(), name, avatar, channelId, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to update webhook %s: %s", d.Id(), err.Error())
 	} else {
-		url := "https://discord.com/api/webhooks/" + webhook.ID.String() + "/" + webhook.Token
-
-		d.Set("channel_id", webhook.ChannelID.String())
+		url := "https://discord.com/api/webhooks/" + webhook.ID + "/" + webhook.Token
+		d.Set("channel_id", webhook.ChannelID)
 		d.Set("name", webhook.Name)
 		d.Set("avatar_hash", webhook.Avatar)
 		d.Set("token", webhook.Token)
@@ -157,9 +149,9 @@ func resourceWebhookUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 func resourceWebhookDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	if err := client.Webhook(getId(d.Id())).Delete(); err != nil {
+	if err := client.WebhookDelete(d.Id(), discordgo.WithContext(ctx)); err != nil {
 		return diag.FromErr(err)
 	} else {
 		return diags

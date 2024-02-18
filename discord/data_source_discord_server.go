@@ -2,8 +2,8 @@ package discord
 
 import (
 	"context"
+	"github.com/bwmarrin/discordgo"
 
-	"github.com/andersfylling/disgord"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -65,24 +65,27 @@ func dataSourceDiscordServer() *schema.Resource {
 func dataSourceDiscordServerRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var err error
-	var server *disgord.Guild
-	client := m.(*Context).Client
+	var server *discordgo.Guild
+	client := m.(*Context).Session
 
 	if v, ok := d.GetOk("server_id"); ok {
-		server, err = client.Guild(getId(v.(string))).Get()
+		server, err = client.Guild(v.(string), discordgo.WithContext(ctx))
 		if err != nil {
 			return diag.Errorf("Failed to fetch server %s: %s", v.(string), err.Error())
 		}
 	}
 	if v, ok := d.GetOk("name"); ok {
-		guilds, err := client.CurrentUser().GetGuilds(&disgord.GetCurrentUserGuilds{Limit: 1000})
+		guilds, err := client.UserGuilds(1000, "", "", discordgo.WithContext(ctx))
 		if err != nil {
 			return diag.Errorf("Failed to fetch server %s: %s", v.(string), err.Error())
 		}
 
 		for _, s := range guilds {
 			if s.Name == v.(string) {
-				server = s
+				server, err = client.Guild(v.(string), discordgo.WithContext(ctx))
+				if err != nil {
+					return diag.Errorf("Failed to fetch server %s: %s", v.(string), err.Error())
+				}
 				break
 			}
 		}
@@ -92,8 +95,8 @@ func dataSourceDiscordServerRead(ctx context.Context, d *schema.ResourceData, m 
 		}
 	}
 
-	d.SetId(server.ID.String())
-	d.Set("server_id", server.ID.String())
+	d.SetId(server.ID)
+	d.Set("server_id", server.ID)
 	d.Set("name", server.Name)
 	d.Set("region", server.Region)
 	d.Set("afk_timeout", server.AfkTimeout)
@@ -103,11 +106,11 @@ func dataSourceDiscordServerRead(ctx context.Context, d *schema.ResourceData, m 
 	d.Set("verification_level", int(server.VerificationLevel))
 	d.Set("explicit_content_filter", int(server.ExplicitContentFilter))
 
-	if !server.AfkChannelID.IsZero() {
-		d.Set("afk_channel_id", server.AfkChannelID.String())
+	if server.AfkChannelID != "" {
+		d.Set("afk_channel_id", server.AfkChannelID)
 	}
-	if !server.OwnerID.IsZero() {
-		d.Set("owner_id", server.OwnerID.String())
+	if server.OwnerID != "" {
+		d.Set("owner_id", server.OwnerID)
 	}
 
 	return diags

@@ -1,10 +1,12 @@
 package discord
 
-import "github.com/andersfylling/disgord"
+import (
+	"github.com/bwmarrin/discordgo"
+)
 
-func hasRole(member *disgord.Member, roleId disgord.Snowflake) bool {
+func hasRole(member *discordgo.Member, roleId string) bool {
 	for _, r := range member.Roles {
-		if r.String() == roleId.String() {
+		if r == roleId {
 			return true
 		}
 	}
