@@ -75,7 +75,7 @@ func dataSourceDiscordServerRead(ctx context.Context, d *schema.ResourceData, m 
 		}
 	}
 	if v, ok := d.GetOk("name"); ok {
-		guilds, err := client.UserGuilds(1000, "", "", discordgo.WithContext(ctx))
+		guilds, err := client.UserGuilds(1000, "", "", false, discordgo.WithContext(ctx))
 		if err != nil {
 			return diag.Errorf("Failed to fetch server %s: %s", v.(string), err.Error())
 		}
