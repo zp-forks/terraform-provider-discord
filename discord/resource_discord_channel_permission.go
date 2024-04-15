@@ -3,11 +3,11 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"strconv"
 
 	"log"
 
-	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -30,18 +30,10 @@ func resourceDiscordChannelPermission() *schema.Resource {
 				ForceNew: true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				ForceNew: true,
-				Required: true,
-				ValidateDiagFunc: func(val interface{}, path cty.Path) (diags diag.Diagnostics) {
-					v := val.(string)
-
-					if v != "role" && v != "user" {
-						diags = append(diags, diag.Errorf("%s is not a valid type. Must be \"role\" or \"user\"", v)...)
-					}
-
-					return diags
-				},
+				Type:         schema.TypeString,
+				ForceNew:     true,
+				Required:     true,
+				ValidateFunc: validation.StringInSlice([]string{"role", "user"}, false),
 			},
 			"overwrite_id": {
 				ForceNew: true,
@@ -71,8 +63,8 @@ func resourceChannelPermissionCreate(ctx context.Context, d *schema.ResourceData
 	permissionType, _ := getDiscordChannelPermissionType(d.Get("type").(string))
 	if err := client.ChannelPermissionSet(
 		channelId, overwriteId, permissionType,
-		d.Get("allow").(int64),
-		d.Get("deny").(int64), discordgo.WithContext(ctx)); err != nil {
+		int64(d.Get("allow").(int)),
+		int64(d.Get("deny").(int)), discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to update channel permissions %s: %s", channelId, err.Error())
 	} else {
 		d.SetId(generateThreePartId(channelId, overwriteId, d.Get("type").(string)))
