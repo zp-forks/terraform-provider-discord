@@ -22,7 +22,7 @@ output mods_color {
 ## Argument Reference
 
 * `server_id` (Required) The server id to search for the user in
-* `role_id` (Optiona) The user id to search for. Either this or `name` is required
+* `role_id` (Optional) The user id to search for. Either this or `name` is required
 * `name` (Optional) The role name to search for. Either this or `role_id` is required
 
 ## Attribute Reference
