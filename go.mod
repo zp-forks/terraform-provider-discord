@@ -2,10 +2,12 @@ module github.com/lucky3028/discord-terraform
 
 go 1.21
 
+toolchain go1.21.6
+
 require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/hashicorp/go-cty v1.4.1-0.20200723130312-85980079f637
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.33.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.32.0
 	github.com/polds/imgbase64 v0.0.0-20140820003345-cb7bf37298b7
 	golang.org/x/net v0.24.0
 	gopkg.in/go-playground/colors.v1 v1.2.0
