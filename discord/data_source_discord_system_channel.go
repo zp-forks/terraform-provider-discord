@@ -2,8 +2,8 @@ package discord
 
 import (
 	"context"
+	"github.com/bwmarrin/discordgo"
 
-	"github.com/andersfylling/disgord"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -17,7 +17,7 @@ func dataSourceDiscordSystemChannel() *schema.Resource {
 				Required: true,
 			},
 			"system_channel_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
@@ -27,13 +27,14 @@ func dataSourceDiscordSystemChannel() *schema.Resource {
 func dataSourceDiscordSystemChannelRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var err error
-	var server *disgord.Guild
-	client := m.(*Context).Client
+	var server *discordgo.Guild
+	client := m.(*Context).Session
 
-	serverId := d.Id()
-	if server, err = client.Guild(getId(serverId)).Get(); err != nil {
+	serverId := d.Get("server_id").(string)
+	if server, err = client.Guild(serverId, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to fetch server %s: %s", serverId, err.Error())
 	} else {
+		d.SetId(serverId)
 		d.Set("system_channel_id", server.SystemChannelID)
 
 		return diags

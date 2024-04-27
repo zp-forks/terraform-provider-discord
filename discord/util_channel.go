@@ -3,11 +3,10 @@ package discord
 import (
 	"context"
 
-	"github.com/andersfylling/disgord"
 	"github.com/bwmarrin/discordgo"
 )
 
-func getTextChannelType(channelType disgord.ChannelType) (string, bool) {
+func getTextChannelType(channelType discordgo.ChannelType) (string, bool) {
 	switch channelType {
 	case 0:
 		return "text", true
@@ -24,18 +23,18 @@ func getTextChannelType(channelType disgord.ChannelType) (string, bool) {
 	return "text", false
 }
 
-func getDiscordChannelType(name string) (disgord.ChannelType, bool) {
+func getDiscordChannelType(name string) (discordgo.ChannelType, bool) {
 	switch name {
 	case "text":
-		return 0, true
+		return discordgo.ChannelTypeGuildText, true
 	case "voice":
-		return 2, true
+		return discordgo.ChannelTypeGuildVoice, true
 	case "category":
-		return 4, true
+		return discordgo.ChannelTypeGuildCategory, true
 	case "news":
-		return 5, true
+		return discordgo.ChannelTypeGuildNews, true
 	case "store":
-		return 6, true
+		return discordgo.ChannelTypeGuildStore, true
 	}
 
 	return 0, false
@@ -47,7 +46,7 @@ type Channel struct {
 	Channel   *discordgo.Channel
 }
 
-func findChannelById(array []*disgord.Channel, id disgord.Snowflake) *disgord.Channel {
+func findChannelById(array []*discordgo.Channel, id string) *discordgo.Channel {
 	for _, element := range array {
 		if element.ID == id {
 			return element
@@ -57,7 +56,7 @@ func findChannelById(array []*disgord.Channel, id disgord.Snowflake) *disgord.Ch
 	return nil
 }
 
-func arePermissionsSynced(from *disgord.Channel, to *disgord.Channel) bool {
+func arePermissionsSynced(from *discordgo.Channel, to *discordgo.Channel) bool {
 	for _, p1 := range from.PermissionOverwrites {
 		cont := false
 		for _, p2 := range to.PermissionOverwrites {
@@ -87,20 +86,15 @@ func arePermissionsSynced(from *disgord.Channel, to *disgord.Channel) bool {
 	return true
 }
 
-func syncChannelPermissions(c *disgord.Client, ctx context.Context, from *disgord.Channel, to *disgord.Channel) error {
+func syncChannelPermissions(c *discordgo.Session, ctx context.Context, from *discordgo.Channel, to *discordgo.Channel) error {
 	for _, p := range to.PermissionOverwrites {
-		if err := c.Channel(to.ID).DeletePermission(p.ID); err != nil {
+		if err := c.ChannelPermissionDelete(to.ID, p.ID); err != nil {
 			return err
 		}
 	}
 
 	for _, p := range from.PermissionOverwrites {
-		params := &disgord.UpdateChannelPermissions{
-			Allow: p.Allow,
-			Deny:  p.Deny,
-			Type:  uint(p.Type),
-		}
-		if err := c.Channel(to.ID).UpdatePermissions(p.ID, params); err != nil {
+		if err := c.ChannelPermissionSet(to.ID, p.ID, discordgo.PermissionOverwriteTypeRole, p.Allow, p.Deny, discordgo.WithContext(ctx)); err != nil {
 			return err
 		}
 	}
@@ -108,12 +102,12 @@ func syncChannelPermissions(c *disgord.Client, ctx context.Context, from *disgor
 	return nil
 }
 
-func getDiscordChannelPermissionType(value string) (uint, bool) {
+func getDiscordChannelPermissionType(value string) (discordgo.PermissionOverwriteType, bool) {
 	switch value {
 	case "role":
-		return 0, true
+		return discordgo.PermissionOverwriteTypeRole, true
 	case "user":
-		return 1, true
+		return discordgo.PermissionOverwriteTypeMember, true
 	default:
 		return 0, false
 	}

@@ -1,12 +1,7 @@
 package discord
 
 import (
-	"fmt"
-	"net/http"
-	"strconv"
-	"time"
-
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 )
 
 type Config struct {
@@ -16,43 +11,16 @@ type Config struct {
 }
 
 type Context struct {
-	Client *disgord.Client
-	Config *Config
+	Session *discordgo.Session
+	Config  *Config
 }
 
-// This type implements the http.RoundTripper interface
-type LimitedRoundTripper struct {
-	Proxied http.RoundTripper
-}
-
-func (lrt LimitedRoundTripper) RoundTrip(req *http.Request) (res *http.Response, e error) {
-	// Do "before sending requests" actions here.
-	fmt.Printf("Sending request to %v\n", req.URL)
-
-	// Send the request, get the response (or the error)
-	res, e = lrt.Proxied.RoundTrip(req)
-
-	if res != nil && res.StatusCode == 429 {
-		retryAfter := res.Header.Get("X-RateLimit-Reset-After")
-		if retryAfter == "" {
-			retryAfter = res.Header.Get("Retry-After")
-		}
-
-		dur, _ := strconv.Atoi(retryAfter)
-		time.Sleep(time.Duration(dur) * time.Millisecond)
-
-		return lrt.RoundTrip(req)
+func (c *Config) Client(version string) (*Context, error) {
+	session, err := discordgo.New(c.Token)
+	session.UserAgent = "discord-terraform/" + version
+	if err != nil {
+		return nil, err
 	}
 
-	return
-}
-
-func (c *Config) Client() (*Context, error) {
-	httpClient := &http.Client{Transport: LimitedRoundTripper{http.DefaultTransport}}
-	client := disgord.New(disgord.Config{
-		BotToken:   c.Token,
-		HTTPClient: httpClient,
-	})
-
-	return &Context{Client: client, Config: c}, nil
+	return &Context{Config: c, Session: session}, nil
 }

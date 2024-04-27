@@ -1,7 +1,7 @@
 package discord
 
 import (
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -44,7 +44,7 @@ func resourceDiscordInvite() *schema.Resource {
 				Optional: true,
 			},
 			"code": {
-				Type:     schema.TypeBool,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
@@ -53,16 +53,16 @@ func resourceDiscordInvite() *schema.Resource {
 
 func resourceInviteCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	channelId := getId(d.Get("channel_id").(string))
+	channelId := d.Get("channel_id").(string)
 
-	if invite, err := client.Channel(channelId).CreateInvite(&disgord.CreateInvite{
+	if invite, err := client.ChannelInviteCreate(channelId, discordgo.Invite{
 		MaxAge:    d.Get("max_age").(int),
 		MaxUses:   d.Get("max_uses").(int),
 		Temporary: d.Get("temporary").(bool),
 		Unique:    d.Get("unique").(bool),
-	}); err != nil {
+	}, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to create a invite: %s", err.Error())
 	} else {
 		d.SetId(invite.Code)
@@ -74,9 +74,9 @@ func resourceInviteCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func resourceInviteRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	if invite, err := client.Invite(d.Id()).Get(false); err != nil {
+	if invite, err := client.Invite(d.Id(), discordgo.WithContext(ctx)); err != nil {
 		d.SetId("")
 	} else {
 		d.Set("code", invite.Code)
@@ -87,9 +87,9 @@ func resourceInviteRead(ctx context.Context, d *schema.ResourceData, m interface
 
 func resourceInviteDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	if _, err := client.Invite(d.Id()).Delete(); err != nil {
+	if _, err := client.InviteDelete(d.Id(), discordgo.WithContext(ctx)); err != nil {
 		return diag.FromErr(err)
 	} else {
 		return diags

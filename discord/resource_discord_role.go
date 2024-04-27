@@ -1,11 +1,10 @@
 package discord
 
 import (
-	"fmt"
-
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"golang.org/x/net/context"
 )
 
@@ -54,20 +53,11 @@ func resourceDiscordRole() *schema.Resource {
 				ForceNew: false,
 			},
 			"position": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  1,
-				ForceNew: false,
-
-				ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
-					v := val.(int)
-
-					if v < 0 {
-						errors = append(errors, fmt.Errorf("position must be greater than 0, got: %d", v))
-					}
-
-					return
-				},
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Default:      1,
+				ForceNew:     false,
+				ValidateFunc: validation.IntAtLeast(1),
 			},
 			"managed": {
 				Type:     schema.TypeBool,
@@ -78,11 +68,11 @@ func resourceDiscordRole() *schema.Resource {
 }
 
 func resourceRoleImport(ctx context.Context, data *schema.ResourceData, i interface{}) ([]*schema.ResourceData, error) {
-	if serverId, roleId, err := getBothIds(data.Id()); err != nil {
+	if serverId, roleId, err := parseTwoIds(data.Id()); err != nil {
 		return nil, err
 	} else {
-		data.SetId(roleId.String())
-		data.Set("server_id", serverId.String())
+		data.SetId(roleId)
+		data.Set("server_id", serverId)
 
 		return schema.ImportStatePassthroughContext(ctx, data, i)
 	}
@@ -90,27 +80,27 @@ func resourceRoleImport(ctx context.Context, data *schema.ResourceData, i interf
 
 func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := getId(d.Get("server_id").(string))
-	server, err := client.Guild(serverId).Get()
+	serverId := d.Get("server_id").(string)
+	server, err := client.Guild(serverId)
 	if err != nil {
 		return diag.Errorf("Server does not exist with that ID: %s", serverId)
 	}
-
-	role, err := client.Guild(serverId).CreateRole(&disgord.CreateGuildRole{
+	role, err := client.GuildRoleCreate(serverId, &discordgo.RoleParams{
 		Name:        d.Get("name").(string),
-		Permissions: uint64(d.Get("permissions").(int)),
-		Color:       uint(d.Get("color").(int)),
-		Hoist:       d.Get("hoist").(bool),
-		Mentionable: d.Get("mentionable").(bool),
-	})
+		Permissions: Int64Ptr(int64(d.Get("permissions").(int))),
+		Color:       IntPtr(d.Get("color").(int)),
+		Hoist:       BoolPtr(d.Get("hoist").(bool)),
+		Mentionable: BoolPtr(d.Get("mentionable").(bool)),
+	}, discordgo.WithContext(ctx))
+
 	if err != nil {
-		return diag.Errorf("Failed to create role for %s: %s", serverId.String(), err.Error())
+		return diag.Errorf("Failed to create role for %s: %s", serverId, err.Error())
 	}
 
 	if newPosition, ok := d.GetOk("position"); ok {
-		var oldRole *disgord.Role
+		var oldRole *discordgo.Role
 		for _, r := range server.Roles {
 			if r.Position == newPosition.(int) {
 				oldRole = r
@@ -118,20 +108,20 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 			}
 		}
 
-		param := []disgord.UpdateGuildRolePositions{{ID: role.ID, Position: newPosition.(int)}}
+		param := []*discordgo.Role{{ID: role.ID, Position: newPosition.(int)}}
 		if oldRole != nil {
-			param = append(param, disgord.UpdateGuildRolePositions{ID: oldRole.ID, Position: role.Position})
+			param = append(param, &discordgo.Role{ID: oldRole.ID, Position: role.Position})
 		}
 
-		if _, err := client.Guild(serverId).UpdateRolePositions(param); err != nil {
+		if _, err := client.GuildRoleReorder(serverId, param, discordgo.WithContext(ctx)); err != nil {
 			diags = append(diags, diag.Errorf("Failed to re-order roles: %s", err.Error())...)
 		} else {
 			d.Set("position", newPosition)
 		}
 	}
 
-	d.SetId(role.ID.String())
-	d.Set("server_id", server.ID.String())
+	d.SetId(role.ID)
+	d.Set("server_id", server.ID)
 	d.Set("managed", role.Managed)
 
 	return diags
@@ -139,60 +129,58 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 
 func resourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := getId(d.Get("server_id").(string))
-	server, err := client.Guild(serverId).Get()
+	role, err := getRole(ctx, client, d.Get("server_id").(string), d.Id())
+
 	if err != nil {
-		return diag.Errorf("Failed to fetch server %s: %s", serverId.String(), err.Error())
-	}
-
-	if role, err := server.Role(getId(d.Id())); err != nil {
 		return diag.Errorf("Failed to fetch role %s: %s", d.Id(), err.Error())
-	} else {
-		d.Set("name", role.Name)
-		d.Set("position", role.Position)
-		d.Set("color", role.Color)
-		d.Set("hoist", role.Hoist)
-		d.Set("mentionable", role.Mentionable)
-		d.Set("permissions", role.Permissions)
-		d.Set("managed", role.Managed)
-
-		return diags
 	}
+
+	d.Set("name", role.Name)
+	d.Set("position", role.Position)
+	d.Set("color", role.Color)
+	d.Set("hoist", role.Hoist)
+	d.Set("mentionable", role.Mentionable)
+	d.Set("permissions", role.Permissions)
+	d.Set("managed", role.Managed)
+
+	return diags
+
 }
 
 func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := getId(d.Get("server_id").(string))
-	server, err := client.Guild(serverId).Get()
+	serverId := d.Get("server_id").(string)
+	server, err := client.Guild(serverId)
 	if err != nil {
-		return diag.Errorf("Failed to fetch server %s: %s", serverId.String(), err.Error())
+		return diag.Errorf("Failed to fetch server %s: %s", serverId, err.Error())
 	}
 
-	roleId := getId(d.Id())
-	role, err := server.Role(roleId)
+	roleId := d.Id()
+	role, err := getRole(ctx, client, serverId, roleId)
 	if err != nil {
 		return diag.Errorf("Failed to fetch role %s: %s", d.Id(), err.Error())
 	}
 
 	if d.HasChange("position") {
 		_, newPosition := d.GetChange("position")
-		var oldRole *disgord.Role
+		var oldRole *discordgo.Role
 		for _, r := range server.Roles {
 			if r.Position == newPosition.(int) {
 				oldRole = r
 				break
 			}
 		}
-		param := []disgord.UpdateGuildRolePositions{{ID: roleId, Position: newPosition.(int)}}
+
+		param := []*discordgo.Role{{ID: role.ID, Position: newPosition.(int)}}
 		if oldRole != nil {
-			param = append(param, disgord.UpdateGuildRolePositions{ID: oldRole.ID, Position: role.Position})
+			param = append(param, &discordgo.Role{ID: oldRole.ID, Position: role.Position})
 		}
 
-		if _, err := client.Guild(serverId).UpdateRolePositions(param); err != nil {
+		if _, err := client.GuildRoleReorder(serverId, param, discordgo.WithContext(ctx)); err != nil {
 			diags = append(diags, diag.Errorf("Failed to re-order roles: %s", err.Error())...)
 		} else {
 			d.Set("position", newPosition)
@@ -204,43 +192,41 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		newColor       int
 		newHoist       = d.Get("hoist").(bool)
 		newMentionable = d.Get("mentionable").(bool)
-		newPermissions = disgord.PermissionBit(d.Get("permissions").(int))
+		newPermissions = d.Get("permissions").(int64)
 	)
 	if _, v := d.GetChange("color"); v.(int) > 0 {
 		newColor = v.(int)
 	} else {
-		newColor = int(role.Color)
+		newColor = role.Color
 	}
 
-	if role, err := client.Guild(serverId).Role(roleId).Update(&disgord.UpdateRole{
-		Name:        &newName,
+	if role, err = client.GuildRoleEdit(serverId, roleId, &discordgo.RoleParams{
+		Name:        newName,
 		Color:       &newColor,
 		Hoist:       &newHoist,
 		Mentionable: &newMentionable,
 		Permissions: &newPermissions,
-	}); err != nil {
+	}, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to update role %s: %s", d.Id(), err.Error())
-	} else {
-		d.Set("name", role.Name)
-		d.Set("position", role.Position)
-		d.Set("color", role.Color)
-		d.Set("hoist", role.Hoist)
-		d.Set("mentionable", role.Mentionable)
-		d.Set("permissions", role.Permissions)
-		d.Set("managed", role.Managed)
-
-		return diags
 	}
+
+	d.Set("name", role.Name)
+	d.Set("position", role.Position)
+	d.Set("color", role.Color)
+	d.Set("hoist", role.Hoist)
+	d.Set("mentionable", role.Mentionable)
+	d.Set("permissions", role.Permissions)
+	d.Set("managed", role.Managed)
+
+	return diags
 }
 
 func resourceRoleDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := getId(d.Get("server_id").(string))
-	roleId := getId(d.Id())
-
-	if err := client.Guild(serverId).Role(roleId).Delete(); err != nil {
+	serverId := d.Get("server_id")
+	if err := client.GuildRoleDelete(serverId.(string), d.Id(), discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to delete role: %s", err.Error())
 	}
 

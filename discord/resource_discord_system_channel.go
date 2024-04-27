@@ -1,7 +1,7 @@
 package discord
 
 import (
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -33,76 +33,65 @@ func resourceDiscordSystemChannel() *schema.Resource {
 
 func resourceSystemChannelCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := disgord.Snowflake(0)
-	if v, ok := d.GetOk("server_id"); ok {
-		serverId = disgord.ParseSnowflakeString(v.(string))
-	}
+	serverId := d.Get("server_id").(string)
 
-	builder := client.Guild(serverId)
-	server, err := builder.Get()
+	server, err := client.Guild(serverId, discordgo.WithContext(ctx))
 	if err != nil {
 		return diag.Errorf("Failed to find server: %s", err.Error())
 	}
 
-	systemChannelId := &server.SystemChannelID
+	systemChannelId := server.SystemChannelID
 	if v, ok := d.GetOk("system_channel_id"); ok {
-		parsedId := disgord.ParseSnowflakeString(v.(string))
+		systemChannelId = v.(string)
 
-		// if id is 0, system channel id cannot be set to 0, so an error has occurred.
-		if parsedId == disgord.Snowflake(0) {
-			systemChannelId = nil
-		} else {
-			systemChannelId = &parsedId
-		}
 	} else {
-		return diag.Errorf("Failed to parse system channel id: %s", err.Error())
+		return diag.Errorf("Failed to parse system channel id")
 	}
-	if _, err := builder.Update(&disgord.UpdateGuild{
+	if _, err := client.GuildEdit(serverId, &discordgo.GuildParams{
 		SystemChannelID: systemChannelId,
-	}); err != nil {
+	}, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to edit server: %s", err.Error())
 	}
 
-	d.SetId(d.Get("server_id").(string))
+	d.SetId(serverId)
 
 	return diags
 }
 
 func resourceSystemChannelRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := disgord.ParseSnowflakeString(d.Id())
+	serverId := d.Id()
 
-	server, err := client.Guild(serverId).Get()
+	server, err := client.Guild(serverId, discordgo.WithContext(ctx))
 	if err != nil {
 		return diag.Errorf("Error fetching server: %s", err.Error())
 	}
 
-	d.Set("system_channel_id", server.SystemChannelID.String())
+	d.Set("system_channel_id", server.SystemChannelID)
 
 	return diags
 }
 
 func resourceSystemChannelUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := disgord.ParseSnowflakeString(d.Get("server_id").(string))
-	builder := client.Guild(serverId)
+	serverId := d.Get("server_id").(string)
+	_, err := client.Guild(serverId, discordgo.WithContext(ctx))
 
-	if _, err := builder.Get(); err != nil {
+	if err != nil {
 		return diag.Errorf("Error fetching server: %s", err.Error())
 	}
 
 	if d.HasChange("system_channel_id") {
-		id := disgord.ParseSnowflakeString(d.Get("system_channel_id").(string))
-
-		if _, err := builder.Update(&disgord.UpdateGuild{
-			SystemChannelID: &id,
-		}); err != nil {
+		id := d.Get("system_channel_id").(string)
+		if _, err := client.GuildEdit(serverId, &discordgo.GuildParams{
+			SystemChannelID: id,
+		}, discordgo.WithContext(ctx)); err != nil {
 			return diag.Errorf("Failed to edit server: %s", err.Error())
 		}
 	}
@@ -112,19 +101,14 @@ func resourceSystemChannelUpdate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourceSystemChannelDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	serverId := disgord.ParseSnowflakeString(d.Get("server_id").(string))
-	builder := client.Guild(serverId)
+	serverID := d.Get("server_id").(string)
 
-	if _, err := builder.Get(); err != nil {
-		return diag.Errorf("Error fetching server: %s", err.Error())
-	}
-
-	if _, err := builder.Update(&disgord.UpdateGuild{
-		SystemChannelID: nil,
-	}); err != nil {
-		return diag.Errorf("Failed to edit server: %s", err.Error())
+	if _, err := client.GuildEdit(serverID, &discordgo.GuildParams{
+		SystemChannelID: "",
+	}, discordgo.WithContext(ctx)); err != nil {
+		return diag.Errorf("Failed to edit server: %s: %s", serverID, err.Error())
 	}
 
 	return diags

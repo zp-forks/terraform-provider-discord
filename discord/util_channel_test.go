@@ -1,9 +1,8 @@
 package discord
 
 import (
+	"github.com/bwmarrin/discordgo"
 	"testing"
-
-	"github.com/andersfylling/disgord"
 )
 
 func TestGetTextChannelType(t *testing.T) {
@@ -24,7 +23,7 @@ func TestGetTextChannelType(t *testing.T) {
 	}
 
 	for _, p := range params {
-		chType := disgord.ChannelType(p.id)
+		chType := discordgo.ChannelType(p.id)
 		resChType, resIsHit := getTextChannelType(chType)
 		if p.chType != resChType {
 			t.Errorf("id: %v - chType Error: ex: %v, ac: %v", p.id, p.chType, resChType)

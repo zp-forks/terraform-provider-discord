@@ -3,7 +3,7 @@ package discord
 import (
 	"fmt"
 
-	"github.com/andersfylling/disgord"
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/polds/imgbase64"
@@ -15,6 +15,7 @@ func baseServerSchema() map[string]*schema.Schema {
 		"region": {
 			Type:     schema.TypeString,
 			Optional: true,
+			Computed: true,
 		},
 		"verification_level": {
 			Type:     schema.TypeInt,
@@ -101,6 +102,7 @@ func baseServerSchema() map[string]*schema.Schema {
 		"owner_id": {
 			Type:     schema.TypeString,
 			Optional: true,
+			Computed: true,
 		},
 	}
 }
@@ -165,7 +167,7 @@ func resourceDiscordManagedServer() *schema.Resource {
 
 func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
 	icon := ""
 	if v, ok := d.GetOk("icon_url"); ok {
@@ -176,31 +178,13 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	name := d.Get("name").(string)
-	server, err := client.CreateGuild(name, &disgord.CreateGuild{
-		Region:                  d.Get("region").(string),
-		Icon:                    icon,
-		VerificationLvl:         d.Get("verification_level").(int),
-		DefaultMsgNotifications: disgord.DefaultMessageNotificationLvl(d.Get("default_message_notifications").(int)),
-		ExplicitContentFilter:   disgord.ExplicitContentFilterLvl(d.Get("explicit_content_filter").(int)),
-		Channels:                nil,
-	})
+	// DiscordGo doesn't support creating a server with anything apart from a name.
+	server, err := client.GuildCreate(name, discordgo.WithContext(ctx))
 	if err != nil {
 		return diag.Errorf("Failed to create server: %s", err.Error())
 	}
 
-	channels, err := client.Guild(server.ID).GetChannels()
-	if err != nil {
-		return diag.Errorf("Failed to fetch channels for new server: %s", err.Error())
-	}
-
-	for _, channel := range channels {
-		if _, err := client.Channel(channel.ID).Delete(); err != nil {
-			return diag.Errorf("Failed to delete channel for new server: %s", err.Error())
-		}
-	}
-
 	splash := ""
-	edit := false
 	if v, ok := d.GetOk("splash_url"); ok {
 		splash = imgbase64.FromRemote(v.(string))
 	}
@@ -208,52 +192,57 @@ func resourceServerCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		splash = v.(string)
 	}
 	if splash != "" {
-		edit = true
 	}
 
 	afkChannel := server.AfkChannelID
 	if v, ok := d.GetOk("afk_channel_id"); ok {
-		afkChannel = disgord.ParseSnowflakeString(v.(string))
-		edit = true
+		afkChannel = v.(string)
 	}
 	afkTimeOut := server.AfkTimeout
 	if v, ok := d.GetOk("afk_timeout"); ok {
 		// The value has been already validated, so this cast is safe.
-		afkTimeOut = uint(v.(int))
-		edit = true
+		afkTimeOut = v.(int)
 	}
 
-	if edit {
-		if _, err = client.Guild(server.ID).Update(&disgord.UpdateGuild{
-			Splash:       &splash,
-			AFKChannelID: &afkChannel,
-		}); err != nil {
-			return diag.Errorf("Failed to edit server: %s", err.Error())
-		}
-		// FIXME: AFKTimeout doesn't exist in UpdateGuild struct.
-		if _, err = client.Guild(server.ID).UpdateBuilder().SetAfkTimeout(int(afkTimeOut)).Execute(); err != nil {
-			return diag.Errorf("Failed to edit server: %s", err.Error())
+	verificationLevel := discordgo.VerificationLevel(d.Get("verification_level").(int))
+	server, err = client.GuildEdit(server.ID, &discordgo.GuildParams{
+		Icon:                        icon,
+		Region:                      d.Get("region").(string),
+		VerificationLevel:           &verificationLevel,
+		DefaultMessageNotifications: d.Get("default_message_notifications").(int),
+		ExplicitContentFilter:       d.Get("explicit_content_filter").(int),
+		AfkChannelID:                afkChannel,
+		AfkTimeout:                  afkTimeOut,
+		Splash:                      splash,
+	}, discordgo.WithContext(ctx))
+	if err != nil {
+		return diag.Errorf("Failed to edit server: %s", err.Error())
+	}
+
+	for _, channel := range server.Channels {
+		if _, err := client.ChannelDelete(channel.ID); err != nil {
+			return diag.Errorf("Failed to delete channel for new server: %s", err.Error())
 		}
 	}
 
 	// Update owner's ID if the specified one is not as same as default,
 	// because we will receive "User is already owner" error if update to the same one.
+	ownerId := server.OwnerID
 	if v, ok := d.GetOk("owner_id"); ok {
-		newOwnerId := disgord.ParseSnowflakeString(v.(string))
-
-		if server.OwnerID != newOwnerId {
-			if _, err = client.Guild(server.ID).Update(&disgord.UpdateGuild{
-				OwnerID: &newOwnerId,
-			}); err != nil {
-				return diag.Errorf("Failed to edit server: %s", err.Error())
-			}
+		newOwnerId := v.(string)
+		if ownerId != newOwnerId {
+			ownerId = newOwnerId
 		}
+		server, err = client.GuildEdit(server.ID, &discordgo.GuildParams{
+			OwnerID: ownerId,
+		}, discordgo.WithContext(ctx))
 	}
 
-	d.SetId(server.ID.String())
+	d.SetId(server.ID)
 	if _, ok := d.GetOk("owner_id"); !ok {
-		d.Set("owner", server.OwnerID.String())
+		d.Set("owner_id", server.OwnerID)
 	}
+	d.Set("region", server.Region)
 	d.Set("icon_hash", server.Icon)
 	d.Set("splash_hash", server.Splash)
 
@@ -279,9 +268,9 @@ func resourceServerManagedCreate(ctx context.Context, d *schema.ResourceData, m 
 
 func resourceServerRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	server, err := client.Guild(getId(d.Id())).Get()
+	server, err := client.Guild(d.Id(), discordgo.WithContext(ctx))
 	if err != nil {
 		return diag.Errorf("Error fetching server: %s", err.Error())
 	}
@@ -295,101 +284,97 @@ func resourceServerRead(ctx context.Context, d *schema.ResourceData, m interface
 	d.Set("verification_level", server.VerificationLevel)
 	d.Set("default_message_notifications", server.DefaultMessageNotifications)
 	d.Set("explicit_content_filter", server.ExplicitContentFilter)
-	if !server.AfkChannelID.IsZero() {
-		d.Set("afk_channel_id", server.AfkChannelID.String())
+	if server.AfkChannelID != "" {
+		d.Set("afk_channel_id", server.AfkChannelID)
 	}
 
-	// We don't want to set the owner to null, should only change this if its changing to something else
-	if d.Get("owner_id").(string) != "" && !server.OwnerID.IsZero() {
-		d.Set("owner_id", server.OwnerID.String())
+	// We don't want to set the owner to null, should only change this if it's changing to something else
+	if d.Get("owner_id").(string) != "" && server.OwnerID != "" {
+		d.Set("owner_id", server.OwnerID)
 	}
 
 	return diags
 }
 
-func toString(v interface{}) string {
-	return v.(string)
-}
-
 func resourceServerUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	server, err := client.Guild(getId(d.Id())).Get()
+	server, err := client.Guild(d.Id(), discordgo.WithContext(ctx))
 	if err != nil {
 		return diag.Errorf("Error fetching server: %s", err.Error())
 	}
 
-	// FIXME: Update()に書き換え
-	builder := client.Guild(server.ID).UpdateBuilder()
+	guildParams := &discordgo.GuildParams{}
 	edit := false
 
 	if d.HasChange("icon_url") {
-		builder.SetIcon(imgbase64.FromRemote(d.Get("icon_url").(string)))
+		guildParams.Icon = imgbase64.FromRemote(d.Get("icon_url").(string))
 		edit = true
 	}
 	if d.HasChange("icon_data_uri") {
-		builder.SetIcon(d.Get("icon_data_uri").(string))
+		guildParams.Icon = d.Get("icon_data_uri").(string)
 		edit = true
 	}
 	if d.HasChange("splash_url") {
-		builder.SetIcon(imgbase64.FromRemote(d.Get("splash_url").(string)))
+		guildParams.Splash = imgbase64.FromRemote(d.Get("splash_url").(string))
 		edit = true
 	}
 	if d.HasChange("splash_data_uri") {
-		builder.SetIcon(d.Get("splash_data_uri").(string))
+		guildParams.Splash = d.Get("splash_data_uri").(string)
 		edit = true
 	}
 	if d.HasChange("afk_channel_id") {
-		builder.SetAfkChannelID(disgord.ParseSnowflakeString(d.Get("afk_channel_id").(string)))
+		guildParams.AfkChannelID = d.Get("afk_channel_id").(string)
 		edit = true
 	}
 	if d.HasChange("afk_timeout") {
-		builder.SetAfkTimeout(d.Get("afk_timeout").(int))
+		guildParams.AfkTimeout = d.Get("afk_timeout").(int)
 		edit = true
 	}
 
 	if d.HasChange("owner_id") {
-		builder.SetOwnerID(disgord.ParseSnowflakeString(d.Get("owner_id").(string)))
+		guildParams.OwnerID = d.Get("owner_id").(string)
 		edit = true
 	}
 	if d.HasChange("verification_level") {
-		builder.SetVerificationLevel(d.Get("verification_level").(int))
+		verificationLevel := discordgo.VerificationLevel(d.Get("verification_level").(int))
+		guildParams.VerificationLevel = &verificationLevel
 		edit = true
 	}
 
 	if d.HasChange("default_message_notifications") {
-		builder.SetDefaultMessageNotifications(disgord.DefaultMessageNotificationLvl(d.Get("default_message_notifications").(int)))
+		guildParams.DefaultMessageNotifications = d.Get("default_message_notifications").(int)
 		edit = true
 	}
 	if d.HasChange("explicit_content_filter") {
-		builder.SetExplicitContentFilter(disgord.ExplicitContentFilterLvl(d.Get("explicit_content_filter").(int)))
+		guildParams.ExplicitContentFilter = d.Get("explicit_content_filter").(int)
 		edit = true
 	}
 	if d.HasChange("name") {
-		builder.SetName(d.Get("name").(string))
+		guildParams.Name = d.Get("name").(string)
 		edit = true
 	}
 	if d.HasChange("region") {
-		builder.SetRegion(d.Get("region").(string))
+		guildParams.Region = d.Get("region").(string)
 		edit = true
 	}
 
 	ownerId, hasOwner := d.GetOk("owner_id")
 	if d.HasChange("owner_id") {
 		if hasOwner {
-			builder.SetOwnerID(getId(ownerId.(string)))
+			guildParams.OwnerID = ownerId.(string)
 			edit = true
 		}
 	} else {
 		if hasOwner {
-			builder.SetOwnerID(server.OwnerID)
+			guildParams.OwnerID = server.OwnerID
 			edit = true
 		}
 	}
 
 	if edit {
-		if _, err = builder.Execute(); err != nil {
+		if _, err = client.GuildEdit(server.ID, guildParams, discordgo.WithContext(ctx)); err != nil {
 			return diag.Errorf("Failed to edit server: %s", err.Error())
 		}
 	}
@@ -399,9 +384,9 @@ func resourceServerUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func resourceServerDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	client := m.(*Context).Client
+	client := m.(*Context).Session
 
-	if err := client.Guild(getId(d.Id())).Delete(); err != nil {
+	if err := client.GuildDelete(d.Id(), discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to delete server: %s", err)
 	}
 
