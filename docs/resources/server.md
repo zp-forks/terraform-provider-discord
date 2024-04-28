@@ -19,7 +19,7 @@ resource discord_server my_server {
 * `explicit_content_filter` (Optional) Explicit Content Filter level
 * `default_message_notifications` (Optional) Default Message Notification settings (0 = all messages, 1 = mentions)
 * `afk_channel_id` (Optional) Channel ID for moving AFK users to
-* `af_timeout` (Optional)  many seconds before moving an AFK user
+* `afk_timeout` (Optional)  many seconds before moving an AFK user
 * `icon_url` (Optional) Remote URL for setting the icon of the server
 * `icon_data_uri` (Optional) Data URI of an image to set the icon
 * `splash_url` (Optional) Remote URL for setting the splash of the server
