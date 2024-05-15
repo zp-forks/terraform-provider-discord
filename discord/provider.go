@@ -79,7 +79,7 @@ func providerConfigure(version string) func(ctx context.Context, d *schema.Resou
 			return nil, diags
 		}
 		config := Config{
-			Token:    token,
+			Token:    "Bot " + token,
 			ClientID: d.Get("client_id").(string),
 			Secret:   d.Get("secret").(string),
 		}
