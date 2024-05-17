@@ -192,7 +192,7 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		newColor       int
 		newHoist       = d.Get("hoist").(bool)
 		newMentionable = d.Get("mentionable").(bool)
-		newPermissions = d.Get("permissions").(int64)
+		newPermissions = int64(d.Get("permissions").(int))
 	)
 	if _, v := d.GetChange("color"); v.(int) > 0 {
 		newColor = v.(int)
@@ -205,7 +205,7 @@ func resourceRoleUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		Color:       &newColor,
 		Hoist:       &newHoist,
 		Mentionable: &newMentionable,
-		Permissions: &newPermissions,
+		Permissions: Int64Ptr(newPermissions),
 	}, discordgo.WithContext(ctx)); err != nil {
 		return diag.Errorf("Failed to update role %s: %s", d.Id(), err.Error())
 	}
