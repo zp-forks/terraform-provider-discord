@@ -2,14 +2,13 @@ package discord
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"log"
 	"strconv"
 
-	"log"
-
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"golang.org/x/net/context"
 )
 
@@ -74,12 +73,14 @@ func resourceChannelPermissionCreate(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceChannelPermissionRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-	client := m.(*Context).Session
+	var (
+		diags          diag.Diagnostics
+		channelId      string
+		overwriteId    string
+		permissionType discordgo.PermissionOverwriteType
+	)
 
-	channelId := d.Get("channel_id").(string)
-	overwriteId := d.Get("overwrite_id").(string)
-	var permissionType discordgo.PermissionOverwriteType
+	client := m.(*Context).Session
 
 	cId, oId, pt, err := parseThreeIds(d.Id())
 	if err != nil {
