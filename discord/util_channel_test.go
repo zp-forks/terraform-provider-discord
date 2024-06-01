@@ -1,8 +1,9 @@
 package discord
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"testing"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func TestGetTextChannelType(t *testing.T) {

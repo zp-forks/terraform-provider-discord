@@ -2,8 +2,8 @@ package discord
 
 import (
 	"context"
-	"github.com/bwmarrin/discordgo"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
