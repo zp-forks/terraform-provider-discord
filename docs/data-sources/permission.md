@@ -49,55 +49,55 @@ resource "discord_channel_permission" "general_mod" {
 
 ### Optional
 
-- `add_reactions` (String)
-- `administrator` (String)
+- `add_reactions` (String) The value to set for the `add_reactions` permission bit
+- `administrator` (String) The value to set for the `administrator` permission bit
 - `allow_extends` (Number) The permission bits to base the new permission set off of for allow
-- `attach_files` (String)
-- `ban_members` (String)
-- `change_nickname` (String)
-- `connect` (String)
-- `create_events` (String)
-- `create_expressions` (String)
-- `create_instant_invite` (String)
-- `create_private_threads` (String)
-- `create_public_threads` (String)
-- `deafen_members` (String)
+- `attach_files` (String) The value to set for the `attach_files` permission bit
+- `ban_members` (String) The value to set for the `ban_members` permission bit
+- `change_nickname` (String) The value to set for the `change_nickname` permission bit
+- `connect` (String) The value to set for the `connect` permission bit
+- `create_events` (String) The value to set for the `create_events` permission bit
+- `create_expressions` (String) The value to set for the `create_expressions` permission bit
+- `create_instant_invite` (String) The value to set for the `create_instant_invite` permission bit
+- `create_private_threads` (String) The value to set for the `create_private_threads` permission bit
+- `create_public_threads` (String) The value to set for the `create_public_threads` permission bit
+- `deafen_members` (String) The value to set for the `deafen_members` permission bit
 - `deny_extends` (Number) The permission bits to base the new permission set off of for allow
-- `embed_links` (String)
-- `kick_members` (String)
-- `manage_channels` (String)
-- `manage_emojis` (String)
-- `manage_events` (String)
-- `manage_guild` (String)
-- `manage_messages` (String)
-- `manage_nicknames` (String)
-- `manage_roles` (String)
-- `manage_threads` (String)
-- `manage_webhooks` (String)
-- `mention_everyone` (String)
-- `moderate_members` (String)
-- `move_members` (String)
-- `mute_members` (String)
-- `priority_speaker` (String)
-- `read_message_history` (String)
-- `request_to_speak` (String)
-- `send_messages` (String)
-- `send_thread_messages` (String)
-- `send_tts_messages` (String)
-- `send_voice_messages` (String)
-- `speak` (String)
-- `start_embedded_activities` (String)
-- `stream` (String)
-- `use_application_commands` (String)
-- `use_external_emojis` (String)
-- `use_external_sounds` (String)
-- `use_external_stickers` (String)
-- `use_soundboard` (String)
-- `use_vad` (String)
-- `view_audit_log` (String)
-- `view_channel` (String)
-- `view_guild_insights` (String)
-- `view_monetization_analytics` (String)
+- `embed_links` (String) The value to set for the `embed_links` permission bit
+- `kick_members` (String) The value to set for the `kick_members` permission bit
+- `manage_channels` (String) The value to set for the `manage_channels` permission bit
+- `manage_emojis` (String) The value to set for the `manage_emojis` permission bit
+- `manage_events` (String) The value to set for the `manage_events` permission bit
+- `manage_guild` (String) The value to set for the `manage_guild` permission bit
+- `manage_messages` (String) The value to set for the `manage_messages` permission bit
+- `manage_nicknames` (String) The value to set for the `manage_nicknames` permission bit
+- `manage_roles` (String) The value to set for the `manage_roles` permission bit
+- `manage_threads` (String) The value to set for the `manage_threads` permission bit
+- `manage_webhooks` (String) The value to set for the `manage_webhooks` permission bit
+- `mention_everyone` (String) The value to set for the `mention_everyone` permission bit
+- `moderate_members` (String) The value to set for the `moderate_members` permission bit
+- `move_members` (String) The value to set for the `move_members` permission bit
+- `mute_members` (String) The value to set for the `mute_members` permission bit
+- `priority_speaker` (String) The value to set for the `priority_speaker` permission bit
+- `read_message_history` (String) The value to set for the `read_message_history` permission bit
+- `request_to_speak` (String) The value to set for the `request_to_speak` permission bit
+- `send_messages` (String) The value to set for the `send_messages` permission bit
+- `send_thread_messages` (String) The value to set for the `send_thread_messages` permission bit
+- `send_tts_messages` (String) The value to set for the `send_tts_messages` permission bit
+- `send_voice_messages` (String) The value to set for the `send_voice_messages` permission bit
+- `speak` (String) The value to set for the `speak` permission bit
+- `start_embedded_activities` (String) The value to set for the `start_embedded_activities` permission bit
+- `stream` (String) The value to set for the `stream` permission bit
+- `use_application_commands` (String) The value to set for the `use_application_commands` permission bit
+- `use_external_emojis` (String) The value to set for the `use_external_emojis` permission bit
+- `use_external_sounds` (String) The value to set for the `use_external_sounds` permission bit
+- `use_external_stickers` (String) The value to set for the `use_external_stickers` permission bit
+- `use_soundboard` (String) The value to set for the `use_soundboard` permission bit
+- `use_vad` (String) The value to set for the `use_vad` permission bit
+- `view_audit_log` (String) The value to set for the `view_audit_log` permission bit
+- `view_channel` (String) The value to set for the `view_channel` permission bit
+- `view_guild_insights` (String) The value to set for the `view_guild_insights` permission bit
+- `view_monetization_analytics` (String) The value to set for the `view_monetization_analytics` permission bit
 
 ### Read-Only
 

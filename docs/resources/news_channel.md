@@ -34,7 +34,7 @@ resource "discord_news_channel" "general" {
 - `position` (Number) Position of the channel, 0-indexed
 - `sync_perms_with_category` (Boolean) Whether channel permissions should be synced or not with the category this channel is in
 - `topic` (String) Topic of the channel
-- `type` (String)
+- `type` (String) The type of the channel. This should never be provided
 
 ### Read-Only
 

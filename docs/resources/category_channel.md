@@ -31,7 +31,7 @@ resource "discord_category_channel" "chatting" {
 ### Optional
 
 - `position` (Number) Position of the channel, 0-indexed
-- `type` (String)
+- `type` (String) The type of the channel. This should never be provided
 
 ### Read-Only
 

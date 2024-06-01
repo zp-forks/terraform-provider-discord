@@ -34,7 +34,7 @@ resource "discord_voice_channel" "general" {
 - `category` (String) ID of category to place this channel in
 - `position` (Number) Position of the channel, 0-indexed
 - `sync_perms_with_category` (Boolean) Whether channel permissions should be synced or not with the category this channel is in
-- `type` (String)
+- `type` (String) The type of the channel. This should never be provided
 - `user_limit` (Number) User Limit of the channel
 
 ### Read-Only

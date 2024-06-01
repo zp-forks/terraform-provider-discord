@@ -31,7 +31,7 @@ resource "discord_member_roles" "jake" {
 
 ### Required
 
-- `role` (Block Set, Min: 1) (see [below for nested schema](#nestedblock--role))
+- `role` (Block Set, Min: 1) Roles to manage (see [below for nested schema](#nestedblock--role))
 - `server_id` (String) ID of the server to manage roles in
 - `user_id` (String) ID of the user to manage roles for
 

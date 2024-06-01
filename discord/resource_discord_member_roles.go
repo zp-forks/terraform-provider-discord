@@ -49,8 +49,9 @@ func resourceDiscordMemberRoles() *schema.Resource {
 				Description: "ID of the server to manage roles in",
 			},
 			"role": {
-				Type:     schema.TypeSet,
-				Required: true,
+				Type:        schema.TypeSet,
+				Required:    true,
+				Description: "Roles to manage",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"role_id": {

@@ -91,6 +91,7 @@ func dataSourceDiscordPermission() *schema.Resource {
 			Optional:     true,
 			Type:         schema.TypeString,
 			Default:      "unset",
+			Description:  fmt.Sprintf("The value to set for the `%s` permission bit", k),
 			ValidateFunc: validation.StringInSlice([]string{"allow", "unset", "deny"}, false),
 		}
 	}

@@ -31,8 +31,9 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 			Description: "The ID of the channel",
 		},
 		"type": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The type of the channel. This should never be provided",
 			ValidateDiagFunc: func(i interface{}, path cty.Path) (diags diag.Diagnostics) {
 				if i.(string) != channelType {
 					diags = append(diags, diag.Errorf("type must be %s, %s passed", channelType, i.(string))...)
