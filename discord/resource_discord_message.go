@@ -1,9 +1,10 @@
 package discord
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"strings"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -20,47 +21,56 @@ func resourceDiscordMessage() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
+		Description: "A resource to create a message",
 		Schema: map[string]*schema.Schema{
 			"channel_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Which channel the message will be in",
 			},
 			"server_id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "ID of the server this message is in",
 			},
 			"author": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "ID of the user who wrote the message",
 			},
 			"content": {
 				AtLeastOneOf: []string{"content", "embed"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "Text content of message. Either this or embed (or both) must be set",
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					return old == strings.TrimSuffix(new, "\r\n")
 				},
 			},
 			"timestamp": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "When the message was sent",
 			},
 			"edited_timestamp": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Optional:    true,
+				Description: "When the message was edited",
 			},
 			"tts": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Whether this message triggers tts (default false)",
 			},
 			"embed": {
 				AtLeastOneOf: []string{"content", "embed"},
 				Type:         schema.TypeList,
 				Optional:     true,
 				MaxItems:     1,
+				Description:  "An embed block (detailed below). There can only be one of these. Either this or content (or both) must be set",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"title": {
@@ -237,13 +247,15 @@ func resourceDiscordMessage() *schema.Resource {
 				},
 			},
 			"pinned": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Whether this message is pinned (default false)",
 			},
 			"type": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The type of the message",
 			},
 		},
 	}

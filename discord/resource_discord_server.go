@@ -13,14 +13,16 @@ import (
 func baseServerSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"region": {
-			Type:     schema.TypeString,
-			Optional: true,
-			Computed: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Computed:    true,
+			Description: "Region of the server",
 		},
 		"verification_level": {
-			Type:     schema.TypeInt,
-			Optional: true,
-			Default:  0,
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     0,
+			Description: "Verification Level of the server",
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
 				if v > 4 || v < 0 {
@@ -31,9 +33,10 @@ func baseServerSchema() map[string]*schema.Schema {
 			},
 		},
 		"explicit_content_filter": {
-			Type:     schema.TypeInt,
-			Optional: true,
-			Default:  0,
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     0,
+			Description: "Explicit Content Filter level",
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
 				if v > 2 || v < 0 {
@@ -44,9 +47,10 @@ func baseServerSchema() map[string]*schema.Schema {
 			},
 		},
 		"default_message_notifications": {
-			Type:     schema.TypeInt,
-			Optional: true,
-			Default:  0,
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     0,
+			Description: "Default Message Notification settings (0 = all messages, 1 = mentions)",
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
 				if v != 0 && v != 1 {
@@ -57,13 +61,15 @@ func baseServerSchema() map[string]*schema.Schema {
 			},
 		},
 		"afk_channel_id": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Channel ID for moving AFK users to",
 		},
 		"afk_timeout": {
-			Type:     schema.TypeInt,
-			Optional: true,
-			Default:  300,
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     300,
+			Description: "many seconds before moving an AFK user",
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
 				// See: https://discord.com/developers/docs/resources/guild#guild-object-guild-structure
@@ -76,33 +82,40 @@ func baseServerSchema() map[string]*schema.Schema {
 			},
 		},
 		"icon_url": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Remote URL for setting the icon of the server",
 		},
 		"icon_data_uri": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Data URI of an image to set the icon",
 		},
 		"icon_hash": {
-			Type:     schema.TypeString,
-			Computed: true,
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "Hash of the icon",
 		},
 		"splash_url": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Remote URL for setting the splash of the server",
 		},
 		"splash_data_uri": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Data URI of an image to set the splash",
 		},
 		"splash_hash": {
-			Type:     schema.TypeString,
-			Computed: true,
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "Hash of the splash",
 		},
 		"owner_id": {
-			Type:     schema.TypeString,
-			Optional: true,
-			Computed: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Computed:    true,
+			Description: "Owner ID of the server (Setting this will transfer ownership)",
 		},
 	}
 }
@@ -111,12 +124,14 @@ func managedServerSchema() map[string]*schema.Schema {
 	res := baseServerSchema()
 
 	res["server_id"] = &schema.Schema{
-		Type:     schema.TypeString,
-		Required: true,
+		Type:        schema.TypeString,
+		Required:    true,
+		Description: "The ID of the server to manage",
 	}
 	res["name"] = &schema.Schema{
-		Type:     schema.TypeString,
-		Optional: true,
+		Type:        schema.TypeString,
+		Optional:    true,
+		Description: "Name of the server",
 	}
 
 	return res
@@ -126,12 +141,14 @@ func serverSchema() map[string]*schema.Schema {
 	res := baseServerSchema()
 
 	res["server_id"] = &schema.Schema{
-		Type:     schema.TypeString,
-		Computed: true,
+		Type:        schema.TypeString,
+		Computed:    true,
+		Description: "The ID of the server to manage",
 	}
 	res["name"] = &schema.Schema{
-		Type:     schema.TypeString,
-		Required: true,
+		Type:        schema.TypeString,
+		Required:    true,
+		Description: "Name of the server",
 	}
 
 	return res
@@ -147,7 +164,8 @@ func resourceDiscordServer() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: serverSchema(),
+		Description: "A resource to create a server",
+		Schema:      serverSchema(),
 	}
 }
 
@@ -161,7 +179,8 @@ func resourceDiscordManagedServer() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: managedServerSchema(),
+		Description: "A resource to create a server",
+		Schema:      managedServerSchema(),
 	}
 }
 

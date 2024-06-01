@@ -3,8 +3,9 @@ package discord
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"strconv"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -66,20 +67,24 @@ func dataSourceDiscordPermission() *schema.Resource {
 
 	schemaMap := make(map[string]*schema.Schema)
 	schemaMap["allow_extends"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Optional: true,
+		Type:        schema.TypeInt,
+		Optional:    true,
+		Description: "The permission bits to base the new permission set off of for allow",
 	}
 	schemaMap["deny_extends"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Optional: true,
+		Type:        schema.TypeInt,
+		Optional:    true,
+		Description: "The permission bits to base the new permission set off of for allow",
 	}
 	schemaMap["allow_bits"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Computed: true,
+		Type:        schema.TypeInt,
+		Computed:    true,
+		Description: "The allow permission bits",
 	}
 	schemaMap["deny_bits"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Computed: true,
+		Type:        schema.TypeInt,
+		Computed:    true,
+		Description: "The allow permission bits",
 	}
 	for k := range permissions {
 		schemaMap[k] = &schema.Schema{
@@ -92,6 +97,7 @@ func dataSourceDiscordPermission() *schema.Resource {
 
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordPermissionRead,
+		Description: "A simple helper to get computed bit total of a list of permissions",
 		Schema:      schemaMap,
 	}
 }

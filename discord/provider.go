@@ -18,12 +18,14 @@ func Provider(version string) func() *schema.Provider {
 					Description: "Discord API Token. This can be found in the Discord Developer Portal. This includes the `Bot` prefix. Can also be set via the `DISCORD_TOKEN` environment variable.",
 				},
 				"client_id": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Currently unused",
 				},
 				"secret": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Currently unused",
 				},
 			},
 

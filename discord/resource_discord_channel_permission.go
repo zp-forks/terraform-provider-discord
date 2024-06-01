@@ -22,32 +22,43 @@ func resourceDiscordChannelPermission() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
+		Description: "A resource to create a Permission Overwrite for a channel",
 		Schema: map[string]*schema.Schema{
 			"channel_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "ID of channel for this overwrite",
 			},
 			"type": {
 				Type:         schema.TypeString,
 				ForceNew:     true,
 				Required:     true,
+				Description:  "Type of the overwrite, `role` or `user`",
 				ValidateFunc: validation.StringInSlice([]string{"role", "user"}, false),
 			},
 			"overwrite_id": {
-				ForceNew: true,
-				Required: true,
-				Type:     schema.TypeString,
+				ForceNew:    true,
+				Required:    true,
+				Type:        schema.TypeString,
+				Description: "ID of user or role for this overwrite",
 			},
 			"allow": {
 				AtLeastOneOf: []string{"allow", "deny"},
 				Optional:     true,
 				Type:         schema.TypeInt,
+				Description:  "Permission bits for the allowed permissions on this overwrite. At least one of these two (allow, deny) are required",
 			},
 			"deny": {
 				AtLeastOneOf: []string{"allow", "deny"},
 				Optional:     true,
 				Type:         schema.TypeInt,
+				Description:  "ermission bits for the denied permissions on this overwrite. At least one of these two (allow, deny) are required",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Hash of the channel id, overwrite id, and type",
 			},
 		},
 	}

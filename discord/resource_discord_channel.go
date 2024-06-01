@@ -3,8 +3,9 @@ package discord
 import (
 	"errors"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
 
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -15,16 +16,19 @@ import (
 func getChannelSchema(channelType string, s map[string]*schema.Schema) map[string]*schema.Schema {
 	addedSchema := map[string]*schema.Schema{
 		"server_id": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "ID of server this channel is in",
+		},
+		"id": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The ID of the channel",
 		},
 		"channel_id": {
-			Type:     schema.TypeString,
-			Computed: true,
-		},
-		"category": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "The ID of the channel",
 		},
 		"type": {
 			Type:     schema.TypeString,
@@ -41,13 +45,15 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 			},
 		},
 		"name": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "Name of the channel",
 		},
 		"position": {
-			Type:     schema.TypeInt,
-			Default:  1,
-			Optional: true,
+			Type:        schema.TypeInt,
+			Default:     1,
+			Optional:    true,
+			Description: "Position of the channel, 0-indexed",
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
 
@@ -62,13 +68,15 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 
 	if channelType != "category" {
 		addedSchema["category"] = &schema.Schema{
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "ID of category to place this channel in",
 		}
 		addedSchema["sync_perms_with_category"] = &schema.Schema{
-			Type:     schema.TypeBool,
-			Optional: true,
-			Default:  true,
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+			Description: "Whether channel permissions should be synced or not with the category this channel is in",
 		}
 	}
 

@@ -22,17 +22,20 @@ func resourceDiscordRoleEveryone() *schema.Resource {
 			StateContext: resourceRoleEveryoneImport,
 		},
 
+		Description: "A resource to create a everyone's role",
 		Schema: map[string]*schema.Schema{
 			"server_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Which server the role will be in",
 			},
 			"permissions": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
-				ForceNew: false,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     0,
+				ForceNew:    false,
+				Description: "The permission bits of the role",
 			},
 		},
 	}

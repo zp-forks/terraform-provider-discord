@@ -13,15 +13,18 @@ func resourceDiscordVoiceChannel() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		Description: "A resource to create a voice channel",
 		Schema: getChannelSchema("voice", map[string]*schema.Schema{
 			"bitrate": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  64000,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     64000,
+				Description: "Bitrate of the channel",
 			},
 			"user_limit": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Description: "User Limit of the channel",
 			},
 		}),
 	}

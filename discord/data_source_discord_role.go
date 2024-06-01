@@ -2,6 +2,7 @@ package discord
 
 import (
 	"context"
+
 	"github.com/bwmarrin/discordgo"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -11,44 +12,59 @@ import (
 func dataSourceDiscordRole() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordRoleRead,
+		Description: "Fetches a role's information from a server.",
 		Schema: map[string]*schema.Schema{
 			"server_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The server id to search for the user in",
 			},
 			"role_id": {
 				ExactlyOneOf: []string{"role_id", "name"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The user id to search for. Either this or `name` is required",
 			},
 			"name": {
 				ExactlyOneOf: []string{"role_id", "name"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The role name to search for. Either this or `role_id` is required",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The id of the role",
 			},
 			"position": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "Position of the role. This is reverse-indexed. the `@everyone` role is 0",
 			},
 			"color": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The integer representation of the role's color with decimal color code",
 			},
 			"permissions": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The permission bits of the role",
 			},
 			"hoist": {
-				Type:     schema.TypeBool,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the role is hoisted",
 			},
 			"mentionable": {
-				Type:     schema.TypeBool,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the role is mentionable",
 			},
 			"managed": {
-				Type:     schema.TypeBool,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the role is managed",
 			},
 		},
 	}
