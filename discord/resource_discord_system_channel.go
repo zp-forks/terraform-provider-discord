@@ -17,15 +17,18 @@ func resourceDiscordSystemChannel() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
+		Description: "Manage the system channel of a Discord server.",
 		Schema: map[string]*schema.Schema{
 			"server_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The ID of the server to manage the system channel for.",
 			},
 			"system_channel_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The ID of the channel that will be used as the system channel.",
 			},
 		},
 	}

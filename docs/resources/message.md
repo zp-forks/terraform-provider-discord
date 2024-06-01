@@ -72,31 +72,31 @@ resource "discord_message" "hello_world" {
 
 Optional:
 
-- `author` (Block List, Max: 1) (see [below for nested schema](#nestedblock--embed--author))
-- `color` (Number)
-- `description` (String)
-- `fields` (Block List) (see [below for nested schema](#nestedblock--embed--fields))
-- `footer` (Block List, Max: 1) (see [below for nested schema](#nestedblock--embed--footer))
-- `image` (Block List, Max: 1) (see [below for nested schema](#nestedblock--embed--image))
-- `provider` (Block List, Max: 1) (see [below for nested schema](#nestedblock--embed--provider))
-- `thumbnail` (Block List, Max: 1) (see [below for nested schema](#nestedblock--embed--thumbnail))
-- `timestamp` (String)
-- `title` (String)
-- `url` (String)
-- `video` (Block List, Max: 1) (see [below for nested schema](#nestedblock--embed--video))
+- `author` (Block List, Max: 1) Author of the embed (see [below for nested schema](#nestedblock--embed--author))
+- `color` (Number) Color of the embed. Must be an integer color code
+- `description` (String) Description of the embed
+- `fields` (Block List) Fields of the embed (see [below for nested schema](#nestedblock--embed--fields))
+- `footer` (Block List, Max: 1) Footer of the embed (see [below for nested schema](#nestedblock--embed--footer))
+- `image` (Block List, Max: 1) Image to be included in the embed (see [below for nested schema](#nestedblock--embed--image))
+- `provider` (Block List, Max: 1) Provider of the embed (see [below for nested schema](#nestedblock--embed--provider))
+- `thumbnail` (Block List, Max: 1) Thumbnail to be included in the embed (see [below for nested schema](#nestedblock--embed--thumbnail))
+- `timestamp` (String) Timestamp of the embed content
+- `title` (String) Title of the embed
+- `url` (String) URL of the embed
+- `video` (Block List, Max: 1) Video to be included in the embed (see [below for nested schema](#nestedblock--embed--video))
 
 <a id="nestedblock--embed--author"></a>
 ### Nested Schema for `embed.author`
 
 Optional:
 
-- `icon_url` (String)
-- `name` (String)
-- `url` (String)
+- `icon_url` (String) URL of the author's icon
+- `name` (String) Name of the author
+- `url` (String) URL of the author
 
 Read-Only:
 
-- `proxy_icon_url` (String)
+- `proxy_icon_url` (String) URL to access the author's icon via Discord's proxy
 
 
 <a id="nestedblock--embed--fields"></a>
@@ -104,12 +104,12 @@ Read-Only:
 
 Required:
 
-- `name` (String)
+- `name` (String) Name of the field
 
 Optional:
 
-- `inline` (Boolean)
-- `value` (String)
+- `inline` (Boolean) Whether the field is inline
+- `value` (String) Value of the field
 
 
 <a id="nestedblock--embed--footer"></a>
@@ -117,11 +117,11 @@ Optional:
 
 Required:
 
-- `text` (String)
+- `text` (String) Text of the footer
 
 Optional:
 
-- `icon_url` (String)
+- `icon_url` (String) URL to an icon to be included in the footer
 
 
 <a id="nestedblock--embed--image"></a>
@@ -129,16 +129,16 @@ Optional:
 
 Required:
 
-- `url` (String)
+- `url` (String) URL of the image to be included in the embed
 
 Optional:
 
-- `height` (Number)
-- `width` (Number)
+- `height` (Number) Height of the image
+- `width` (Number) Width of the image
 
 Read-Only:
 
-- `proxy_url` (String)
+- `proxy_url` (String) URL to access the image via Discord's proxy
 
 
 <a id="nestedblock--embed--provider"></a>
@@ -146,8 +146,8 @@ Read-Only:
 
 Optional:
 
-- `name` (String)
-- `url` (String)
+- `name` (String) Name of the provider
+- `url` (String) URL of the provider
 
 
 <a id="nestedblock--embed--thumbnail"></a>
@@ -155,16 +155,16 @@ Optional:
 
 Required:
 
-- `url` (String)
+- `url` (String) URL of the thumbnail to be included in the embed
 
 Optional:
 
-- `height` (Number)
-- `width` (Number)
+- `height` (Number) Height of the thumbnail
+- `width` (Number) Width of the thumbnail
 
 Read-Only:
 
-- `proxy_url` (String)
+- `proxy_url` (String) URL to access the thumbnail via Discord's proxy
 
 
 <a id="nestedblock--embed--video"></a>
@@ -172,12 +172,12 @@ Read-Only:
 
 Required:
 
-- `url` (String)
+- `url` (String) URL of the video to be included in the embed
 
 Optional:
 
-- `height` (Number)
-- `width` (Number)
+- `height` (Number) Height of the video
+- `width` (Number) Width of the video
 
 
 
