@@ -24,3 +24,9 @@ jobs:
         run: go build -v ./...
       - name: Test
         run: go test -v ./...
+      - name: Generate docs
+        run: go generate ./...
+      - name: Check for documentation changes
+        run: |
+          git diff --compact-summary --exit-code || \
+            (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
