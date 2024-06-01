@@ -3,12 +3,12 @@
 page_title: "discord_role_everyone Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create a everyone's role
+  Resource to manage permissions for the default @everyone role.
 ---
 
 # discord_role_everyone (Resource)
 
-A resource to create a everyone's role
+Resource to manage permissions for the default `@everyone` role.
 
 ## Example Usage
 
@@ -24,12 +24,12 @@ resource "discord_role_everyone" "everyone" {
 
 ### Required
 
-- `server_id` (String) Which server the role will be in
+- `server_id` (String) Which server the role will be in.
 
 ### Optional
 
-- `permissions` (Number) The permission bits of the role
+- `permissions` (Number) The permission bits of the role.
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) The ID of the server.

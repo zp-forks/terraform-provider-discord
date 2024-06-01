@@ -3,12 +3,12 @@
 page_title: "discord_system_channel Data Source - discord"
 subcategory: ""
 description: |-
-  
+  Fetches a server's system channel.
 ---
 
 # discord_system_channel (Data Source)
 
-
+Fetches a server's system channel.
 
 
 
@@ -17,9 +17,9 @@ description: |-
 
 ### Required
 
-- `server_id` (String)
+- `server_id` (String) The server ID to search for.
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
-- `system_channel_id` (String)
+- `id` (String) The ID of the server.
+- `system_channel_id` (String) The ID of the server's system channel.

@@ -27,18 +27,18 @@ output "discord_api_region" {
 
 ### Optional
 
-- `name` (String) The server name to search for
-- `server_id` (String) The server id to search for
+- `name` (String) The server name to search for.
+- `server_id` (String) The server ID to search for.
 
 ### Read-Only
 
-- `afk_channel_id` (Number) The AFK channel ID
-- `afk_timeout` (Number) The AFK timeout of the server
-- `default_message_notifications` (Number) Whether the server has default_message_notifications set to just mentions
-- `explicit_content_filter` (Number) Explicit Content Filter level of the server
-- `icon_hash` (String) The hash of the server icon
-- `id` (String) The id of the server
-- `owner_id` (String) The ID of the owner
-- `region` (String) Region of the server
-- `splash_hash` (String) The hash of the server splash
-- `verification_level` (Number) Required verification level of the server
+- `afk_channel_id` (Number) The AFK channel ID.
+- `afk_timeout` (Number) The AFK timeout of the server.
+- `default_message_notifications` (Number) The default message notification level of the server.
+- `explicit_content_filter` (Number) The explicit content filter level of the server.
+- `icon_hash` (String) The hash of the server icon.
+- `id` (String) The ID of the server.
+- `owner_id` (String) The ID of the owner.
+- `region` (String) The region of the server.
+- `splash_hash` (String) The hash of the server splash.
+- `verification_level` (Number) The required verification level of the server.

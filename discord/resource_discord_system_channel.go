@@ -30,6 +30,11 @@ func resourceDiscordSystemChannel() *schema.Resource {
 				Required:    true,
 				Description: "The ID of the channel that will be used as the system channel.",
 			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the server.",
+			},
 		},
 	}
 }

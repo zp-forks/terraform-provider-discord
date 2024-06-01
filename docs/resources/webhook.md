@@ -3,12 +3,12 @@
 page_title: "discord_webhook Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create a webhook for a channel
+  A resource to create a webhook for a channel.
 ---
 
 # discord_webhook (Resource)
 
-A resource to create a webhook for a channel
+A resource to create a webhook for a channel.
 
 ## Example Usage
 
@@ -33,19 +33,19 @@ output "webhook-url" {
 
 ### Required
 
-- `channel_id` (String) ID of the channel to create a webhook for
-- `name` (String) Default name of the webhook
+- `channel_id` (String) ID of the channel to create a webhook for.
+- `name` (String) Default name of the webhook.
 
 ### Optional
 
-- `avatar_data_uri` (String) Data URI of an image to set as the default avatar of the webhook
-- `avatar_url` (String) Remote URL for setting the default avatar of the webhook
+- `avatar_data_uri` (String) Data URI of an image to set as the default avatar of the webhook.
+- `avatar_url` (String) Remote URL for setting the default avatar of the webhook.
 
 ### Read-Only
 
-- `avatar_hash` (String) Hash of the avatar
-- `github_url` (String, Sensitive) The GitHub-compatible webhook URL
-- `id` (String) The ID of this resource.
-- `slack_url` (String, Sensitive) The Slack-compatible webhook URL
-- `token` (String, Sensitive) The webhook token
-- `url` (String, Sensitive) The webhook URL
+- `avatar_hash` (String) Hash of the avatar.
+- `github_url` (String, Sensitive) The GitHub-compatible webhook URL.
+- `id` (String) The ID of the webhook.
+- `slack_url` (String, Sensitive) The Slack-compatible webhook URL.
+- `token` (String, Sensitive) The webhook token.
+- `url` (String, Sensitive) The webhook URL.

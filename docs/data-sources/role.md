@@ -17,6 +17,7 @@ data "discord_role" "mods_id" {
   server_id = "81384788765712384"
   role_id   = "175643578071121920"
 }
+
 data "discord_role" "mods_name" {
   server_id = "81384788765712384"
   name      = "Mods"
@@ -32,19 +33,19 @@ output "mods_color" {
 
 ### Required
 
-- `server_id` (String) The server id to search for the user in
+- `server_id` (String) The server ID to search for the user in.
 
 ### Optional
 
-- `name` (String) The role name to search for. Either this or `role_id` is required
-- `role_id` (String) The user id to search for. Either this or `name` is required
+- `name` (String) The role name to search for. Either this or `role_id` is required.
+- `role_id` (String) The user ID to search for. Either this or `name` is required.
 
 ### Read-Only
 
-- `color` (Number) The integer representation of the role's color with decimal color code
-- `hoist` (Boolean) Whether the role is hoisted
-- `id` (String) The id of the role
-- `managed` (Boolean) Whether the role is managed
-- `mentionable` (Boolean) Whether the role is mentionable
-- `permissions` (Number) The permission bits of the role
-- `position` (Number) Position of the role. This is reverse-indexed. the `@everyone` role is 0
+- `color` (Number) The integer representation of the role's color with decimal color code.
+- `hoist` (Boolean) Whether the role is hoisted.
+- `id` (String) The ID of the role.
+- `managed` (Boolean) Whether the role is managed.
+- `mentionable` (Boolean) Whether the role is mentionable.
+- `permissions` (Number) The permission bits of the role.
+- `position` (Number) Position of the role. This is reverse-indexed, with `@everyone` being `0`.

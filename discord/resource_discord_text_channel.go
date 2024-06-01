@@ -13,18 +13,18 @@ func resourceDiscordTextChannel() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Description: "A resource to create a text channel",
+		Description: "A resource to create a text channel.",
 		Schema: getChannelSchema("text", map[string]*schema.Schema{
 			"topic": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Topic of the channel",
+				Description: "Topic of the channel.",
 			},
 			"nsfw": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
-				Description: "Whether the channel is NSFW",
+				Description: "Whether the channel is NSFW.",
 			},
 		}),
 	}

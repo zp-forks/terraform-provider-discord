@@ -37,6 +37,6 @@ resource "discord_server" "my_server" {
 
 ### Optional
 
-- `client_id` (String) Currently unused
-- `secret` (String) Currently unused
-- `token` (String) Discord API Token. This can be found in the Discord Developer Portal. This includes the `Bot` prefix. Can also be set via the `DISCORD_TOKEN` environment variable.
+- `client_id` (String) OAuth app client ID. Currently unused.
+- `secret` (String) OAuth app secret. Currently unused.
+- `token` (String) Discord API token, without the `Bot` prefix. This can be found in the Discord Developer Portal. This can also be set via the `DISCORD_TOKEN` environment variable.

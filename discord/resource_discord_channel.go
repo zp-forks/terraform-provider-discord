@@ -17,22 +17,22 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 		"server_id": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "ID of server this channel is in",
+			Description: "ID of server this channel is in.",
 		},
 		"id": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "The ID of the channel",
+			Description: "The ID of the channel.",
 		},
 		"channel_id": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "The ID of the channel",
+			Description: "The ID of the channel.",
 		},
 		"type": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "The type of the channel. This should never be provided",
+			Description: "The type of the channel. This is only for internal use and should never be provided.",
 			ValidateDiagFunc: func(i interface{}, path cty.Path) (diags diag.Diagnostics) {
 				if i.(string) != channelType {
 					diags = append(diags, diag.Errorf("type must be %s, %s passed", channelType, i.(string))...)
@@ -47,13 +47,13 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 		"name": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "Name of the channel",
+			Description: "Name of the channel.",
 		},
 		"position": {
 			Type:        schema.TypeInt,
 			Default:     1,
 			Optional:    true,
-			Description: "Position of the channel, 0-indexed",
+			Description: "Position of the channel, `0`-indexed.",
 			ValidateFunc: func(val interface{}, key string) (warns []string, errors []error) {
 				v := val.(int)
 
@@ -70,13 +70,13 @@ func getChannelSchema(channelType string, s map[string]*schema.Schema) map[strin
 		addedSchema["category"] = &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "ID of category to place this channel in",
+			Description: "ID of category to place this channel in.",
 		}
 		addedSchema["sync_perms_with_category"] = &schema.Schema{
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Default:     true,
-			Description: "Whether channel permissions should be synced or not with the category this channel is in",
+			Description: "Whether channel permissions should be synced with the category this channel is in.",
 		}
 	}
 

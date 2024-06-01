@@ -23,8 +23,10 @@ resource "discord_message" "hello_world" {
 ```terraform
 resource "discord_message" "hello_world" {
   channel_id = var.channel_id
+
   embed {
     title = "Hello World"
+
     footer {
       text = "I'm awesome"
     }
@@ -49,54 +51,54 @@ resource "discord_message" "hello_world" {
 
 ### Required
 
-- `channel_id` (String) Which channel the message will be in
+- `channel_id` (String) ID of the channel the message will be in.
 
 ### Optional
 
-- `content` (String) Text content of message. Either this or embed (or both) must be set
-- `edited_timestamp` (String) When the message was edited
-- `embed` (Block List, Max: 1) An embed block (detailed below). There can only be one of these. Either this or content (or both) must be set (see [below for nested schema](#nestedblock--embed))
-- `pinned` (Boolean) Whether this message is pinned (default false)
-- `tts` (Boolean) Whether this message triggers tts (default false)
+- `content` (String) Text content of message. At least one of `content` or `embed` must be set.
+- `edited_timestamp` (String) When the message was edited.
+- `embed` (Block List, Max: 1) An embed block. At least one of `content` or `embed` must be set. (see [below for nested schema](#nestedblock--embed))
+- `pinned` (Boolean) Whether this message is pinned. (default `false`)
+- `tts` (Boolean) Whether this message triggers TTS. (default `false`)
 
 ### Read-Only
 
-- `author` (String) ID of the user who wrote the message
-- `id` (String) The ID of this resource.
-- `server_id` (String) ID of the server this message is in
-- `timestamp` (String) When the message was sent
-- `type` (Number) The type of the message
+- `author` (String) ID of the user who wrote the message.
+- `id` (String) The ID of the message.
+- `server_id` (String) ID of the server this message is in.
+- `timestamp` (String) When the message was sent.
+- `type` (Number) The type of the message.
 
 <a id="nestedblock--embed"></a>
 ### Nested Schema for `embed`
 
 Optional:
 
-- `author` (Block List, Max: 1) Author of the embed (see [below for nested schema](#nestedblock--embed--author))
-- `color` (Number) Color of the embed. Must be an integer color code
-- `description` (String) Description of the embed
-- `fields` (Block List) Fields of the embed (see [below for nested schema](#nestedblock--embed--fields))
-- `footer` (Block List, Max: 1) Footer of the embed (see [below for nested schema](#nestedblock--embed--footer))
-- `image` (Block List, Max: 1) Image to be included in the embed (see [below for nested schema](#nestedblock--embed--image))
-- `provider` (Block List, Max: 1) Provider of the embed (see [below for nested schema](#nestedblock--embed--provider))
-- `thumbnail` (Block List, Max: 1) Thumbnail to be included in the embed (see [below for nested schema](#nestedblock--embed--thumbnail))
-- `timestamp` (String) Timestamp of the embed content
-- `title` (String) Title of the embed
-- `url` (String) URL of the embed
-- `video` (Block List, Max: 1) Video to be included in the embed (see [below for nested schema](#nestedblock--embed--video))
+- `author` (Block List, Max: 1) Author of the embed. (see [below for nested schema](#nestedblock--embed--author))
+- `color` (Number) Color of the embed. Must be an integer color code.
+- `description` (String) Description of the embed.
+- `fields` (Block List) Fields of the embed. (see [below for nested schema](#nestedblock--embed--fields))
+- `footer` (Block List, Max: 1) Footer of the embed. (see [below for nested schema](#nestedblock--embed--footer))
+- `image` (Block List, Max: 1) Image to be included in the embed. (see [below for nested schema](#nestedblock--embed--image))
+- `provider` (Block List, Max: 1) Provider of the embed. (see [below for nested schema](#nestedblock--embed--provider))
+- `thumbnail` (Block List, Max: 1) Thumbnail to be included in the embed. (see [below for nested schema](#nestedblock--embed--thumbnail))
+- `timestamp` (String) Timestamp of the embed content.
+- `title` (String) Title of the embed.
+- `url` (String) URL of the embed.
+- `video` (Block List, Max: 1) Video to be included in the embed. (see [below for nested schema](#nestedblock--embed--video))
 
 <a id="nestedblock--embed--author"></a>
 ### Nested Schema for `embed.author`
 
 Optional:
 
-- `icon_url` (String) URL of the author's icon
-- `name` (String) Name of the author
-- `url` (String) URL of the author
+- `icon_url` (String) URL of the author's icon.
+- `name` (String) Name of the author.
+- `url` (String) URL of the author.
 
 Read-Only:
 
-- `proxy_icon_url` (String) URL to access the author's icon via Discord's proxy
+- `proxy_icon_url` (String) URL to access the author's icon via Discord's proxy.
 
 
 <a id="nestedblock--embed--fields"></a>
@@ -104,12 +106,12 @@ Read-Only:
 
 Required:
 
-- `name` (String) Name of the field
+- `name` (String) Name of the field.
 
 Optional:
 
-- `inline` (Boolean) Whether the field is inline
-- `value` (String) Value of the field
+- `inline` (Boolean) Whether the field is inline.
+- `value` (String) Value of the field.
 
 
 <a id="nestedblock--embed--footer"></a>
@@ -117,11 +119,11 @@ Optional:
 
 Required:
 
-- `text` (String) Text of the footer
+- `text` (String) Text of the footer.
 
 Optional:
 
-- `icon_url` (String) URL to an icon to be included in the footer
+- `icon_url` (String) URL to an icon to be included in the footer.
 
 
 <a id="nestedblock--embed--image"></a>
@@ -129,16 +131,16 @@ Optional:
 
 Required:
 
-- `url` (String) URL of the image to be included in the embed
+- `url` (String) URL of the image to be included in the embed.
 
 Optional:
 
-- `height` (Number) Height of the image
-- `width` (Number) Width of the image
+- `height` (Number) Height of the image.
+- `width` (Number) Width of the image.
 
 Read-Only:
 
-- `proxy_url` (String) URL to access the image via Discord's proxy
+- `proxy_url` (String) URL to access the image via Discord's proxy.
 
 
 <a id="nestedblock--embed--provider"></a>
@@ -146,8 +148,8 @@ Read-Only:
 
 Optional:
 
-- `name` (String) Name of the provider
-- `url` (String) URL of the provider
+- `name` (String) Name of the provider.
+- `url` (String) URL of the provider.
 
 
 <a id="nestedblock--embed--thumbnail"></a>
@@ -155,16 +157,16 @@ Optional:
 
 Required:
 
-- `url` (String) URL of the thumbnail to be included in the embed
+- `url` (String) URL of the thumbnail to be included in the embed.
 
 Optional:
 
-- `height` (Number) Height of the thumbnail
-- `width` (Number) Width of the thumbnail
+- `height` (Number) Height of the thumbnail.
+- `width` (Number) Width of the thumbnail.
 
 Read-Only:
 
-- `proxy_url` (String) URL to access the thumbnail via Discord's proxy
+- `proxy_url` (String) URL to access the thumbnail via Discord's proxy.
 
 
 <a id="nestedblock--embed--video"></a>
@@ -172,12 +174,12 @@ Read-Only:
 
 Required:
 
-- `url` (String) URL of the video to be included in the embed
+- `url` (String) URL of the video to be included in the embed.
 
 Optional:
 
-- `height` (Number) Height of the video
-- `width` (Number) Width of the video
+- `height` (Number) Height of the video.
+- `width` (Number) Width of the video.
 
 
 

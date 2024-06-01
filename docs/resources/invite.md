@@ -3,12 +3,12 @@
 page_title: "discord_invite Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create an Invite for a channel
+  A resource to create an invite for a channel.
 ---
 
 # discord_invite (Resource)
 
-A resource to create an Invite for a channel
+A resource to create an invite for a channel.
 
 ## Example Usage
 
@@ -24,16 +24,16 @@ resource "discord_invite" "chatting" {
 
 ### Required
 
-- `channel_id` (String) ID of the channel to create an invite for
+- `channel_id` (String) ID of the channel to create an invite for.
 
 ### Optional
 
-- `max_age` (Number) Age of the invite. 0 for permanent (default 86400)
-- `max_uses` (Number) Max number of uses for the invite. 0 (the default) for unlimited
-- `temporary` (Boolean) Whether the invite kicks users after the close discord (default false)
-- `unique` (Boolean) Whether this should create a new invite every time
+- `max_age` (Number) Age of the invite. `0` for permanent. (default `86400`)
+- `max_uses` (Number) Max number of uses for the invite. `0` (the default) for unlimited.
+- `temporary` (Boolean) Whether the invite kicks users after they close Discord. (default `false`)
+- `unique` (Boolean) Whether this should create a new invite every time.
 
 ### Read-Only
 
-- `code` (String) The invite code
-- `id` (String) The invite code
+- `code` (String) The invite code.
+- `id` (String) The invite code.

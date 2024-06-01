@@ -3,12 +3,12 @@
 page_title: "discord_voice_channel Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create a voice channel
+  A resource to create a voice channel.
 ---
 
 # discord_voice_channel (Resource)
 
-A resource to create a voice channel
+A resource to create a voice channel.
 
 ## Example Usage
 
@@ -25,19 +25,19 @@ resource "discord_voice_channel" "general" {
 
 ### Required
 
-- `name` (String) Name of the channel
-- `server_id` (String) ID of server this channel is in
+- `name` (String) Name of the channel.
+- `server_id` (String) ID of server this channel is in.
 
 ### Optional
 
-- `bitrate` (Number) Bitrate of the channel
-- `category` (String) ID of category to place this channel in
-- `position` (Number) Position of the channel, 0-indexed
-- `sync_perms_with_category` (Boolean) Whether channel permissions should be synced or not with the category this channel is in
-- `type` (String) The type of the channel. This should never be provided
-- `user_limit` (Number) User Limit of the channel
+- `bitrate` (Number) Bitrate of the channel.
+- `category` (String) ID of category to place this channel in.
+- `position` (Number) Position of the channel, `0`-indexed.
+- `sync_perms_with_category` (Boolean) Whether channel permissions should be synced with the category this channel is in.
+- `type` (String) The type of the channel. This is only for internal use and should never be provided.
+- `user_limit` (Number) User limit of the channel.
 
 ### Read-Only
 
-- `channel_id` (String) The ID of the channel
-- `id` (String) The ID of the channel
+- `channel_id` (String) The ID of the channel.
+- `id` (String) The ID of the channel.

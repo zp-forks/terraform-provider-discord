@@ -28,20 +28,20 @@ output "jakes_username_and_discrim" {
 
 ### Required
 
-- `server_id` (String) The server id to search for the user in
+- `server_id` (String) The server ID to search for the user in.
 
 ### Optional
 
-- `discriminator` (String, Deprecated) The discriminator to search for. Username is required when using this
-- `user_id` (String) The user id to search for. Required if not searching by username/discriminator
-- `username` (String) The username to search for. Discriminator is required when using this
+- `discriminator` (String, Deprecated) The discriminator to search for. `username` is required when using this.
+- `user_id` (String) The user ID to search for. Required if not searching by `username` / `discriminator`.
+- `username` (String) The username to search for.
 
 ### Read-Only
 
-- `avatar` (String) The avatar hash of the user
-- `id` (String) The user's id
-- `in_server` (Boolean) Bool of whether or not the user is in the server
-- `joined_at` (String) The time at which the user joined
-- `nick` (String) The current nickname of the user
-- `premium_since` (String) The time at which the user became premium
-- `roles` (Set of String) Array of role ids that the user has
+- `avatar` (String) The avatar hash of the user.
+- `id` (String) The user's ID.
+- `in_server` (Boolean) Whether the user is in the server.
+- `joined_at` (String) The time at which the user joined.
+- `nick` (String) The current nickname of the user.
+- `premium_since` (String) The time at which the user became premium.
+- `roles` (Set of String) IDs of the roles that the user has.

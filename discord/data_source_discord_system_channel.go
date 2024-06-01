@@ -11,14 +11,22 @@ import (
 func dataSourceDiscordSystemChannel() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordSystemChannelRead,
+		Description: "Fetches a server's system channel.",
 		Schema: map[string]*schema.Schema{
 			"server_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The server ID to search for.",
 			},
 			"system_channel_id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the server's system channel.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the server.",
 			},
 		},
 	}

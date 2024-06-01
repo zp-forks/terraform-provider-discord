@@ -33,36 +33,36 @@ func resourceDiscordMemberRoles() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Description: "A resource to manage member roles for a server",
+		Description: "A resource to manage member roles for a server.",
 		Schema: map[string]*schema.Schema{
 			"user_id": {
 				Type:        schema.TypeString,
 				ForceNew:    true,
 				Required:    true,
-				Description: "ID of the user to manage roles for",
+				Description: "ID of the user to manage roles for.",
 			},
 			"server_id": {
 				Type:        schema.TypeString,
 				ForceNew:    true,
 				Required:    true,
-				Description: "ID of the server to manage roles in",
+				Description: "ID of the server to manage roles in.",
 			},
 			"role": {
 				Type:        schema.TypeSet,
 				Required:    true,
-				Description: "Roles to manage",
+				Description: "Roles to manage.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"role_id": {
 							Type:        schema.TypeString,
 							Required:    true,
-							Description: "The role id to manage",
+							Description: "The role ID to manage.",
 						},
 						"has_role": {
 							Type:        schema.TypeBool,
 							Optional:    true,
 							Default:     true,
-							Description: "Whether the user should have the role",
+							Description: "Whether the user should have the role. (default `true`)",
 						},
 					},
 				},

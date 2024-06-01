@@ -26,23 +26,23 @@ func resourceDiscordMessage() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "Which channel the message will be in",
+				Description: "ID of the channel the message will be in.",
 			},
 			"server_id": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "ID of the server this message is in",
+				Description: "ID of the server this message is in.",
 			},
 			"author": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "ID of the user who wrote the message",
+				Description: "ID of the user who wrote the message.",
 			},
 			"content": {
 				AtLeastOneOf: []string{"content", "embed"},
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "Text content of message. Either this or embed (or both) must be set",
+				Description:  "Text content of message. At least one of `content` or `embed` must be set.",
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					return old == strings.TrimSuffix(new, "\r\n")
 				},
@@ -50,69 +50,69 @@ func resourceDiscordMessage() *schema.Resource {
 			"timestamp": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "When the message was sent",
+				Description: "When the message was sent.",
 			},
 			"edited_timestamp": {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Optional:    true,
-				Description: "When the message was edited",
+				Description: "When the message was edited.",
 			},
 			"tts": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
-				Description: "Whether this message triggers tts (default false)",
+				Description: "Whether this message triggers TTS. (default `false`)",
 			},
 			"embed": {
 				AtLeastOneOf: []string{"content", "embed"},
 				Type:         schema.TypeList,
 				Optional:     true,
 				MaxItems:     1,
-				Description:  "An embed block (detailed below). There can only be one of these. Either this or content (or both) must be set",
+				Description:  "An embed block. At least one of `content` or `embed` must be set.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"title": {
 							Type:        schema.TypeString,
 							Optional:    true,
-							Description: "Title of the embed",
+							Description: "Title of the embed.",
 						},
 						"description": {
 							Type:        schema.TypeString,
 							Optional:    true,
-							Description: "Description of the embed",
+							Description: "Description of the embed.",
 						},
 						"url": {
 							Type:        schema.TypeString,
 							Optional:    true,
-							Description: "URL of the embed",
+							Description: "URL of the embed.",
 						},
 						"timestamp": {
 							Type:        schema.TypeString,
 							Optional:    true,
-							Description: "Timestamp of the embed content",
+							Description: "Timestamp of the embed content.",
 						},
 						"color": {
 							Type:        schema.TypeInt,
 							Optional:    true,
-							Description: "Color of the embed. Must be an integer color code",
+							Description: "Color of the embed. Must be an integer color code.",
 						},
 						"footer": {
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
-							Description: "Footer of the embed",
+							Description: "Footer of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"text": {
 										Type:        schema.TypeString,
 										Required:    true,
-										Description: "Text of the footer",
+										Description: "Text of the footer.",
 									},
 									"icon_url": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "URL to an icon to be included in the footer",
+										Description: "URL to an icon to be included in the footer.",
 									},
 								},
 							},
@@ -121,28 +121,28 @@ func resourceDiscordMessage() *schema.Resource {
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
-							Description: "Image to be included in the embed",
+							Description: "Image to be included in the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"url": {
 										Type:        schema.TypeString,
 										Required:    true,
-										Description: "URL of the image to be included in the embed",
+										Description: "URL of the image to be included in the embed.",
 									},
 									"proxy_url": {
 										Type:        schema.TypeString,
 										Computed:    true,
-										Description: "URL to access the image via Discord's proxy",
+										Description: "URL to access the image via Discord's proxy.",
 									},
 									"height": {
 										Type:        schema.TypeInt,
 										Optional:    true,
-										Description: "Height of the image",
+										Description: "Height of the image.",
 									},
 									"width": {
 										Type:        schema.TypeInt,
 										Optional:    true,
-										Description: "Width of the image",
+										Description: "Width of the image.",
 									},
 								},
 							},
@@ -151,28 +151,28 @@ func resourceDiscordMessage() *schema.Resource {
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
-							Description: "Thumbnail to be included in the embed",
+							Description: "Thumbnail to be included in the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"url": {
 										Type:        schema.TypeString,
 										Required:    true,
-										Description: "URL of the thumbnail to be included in the embed",
+										Description: "URL of the thumbnail to be included in the embed.",
 									},
 									"proxy_url": {
 										Type:        schema.TypeString,
 										Computed:    true,
-										Description: "URL to access the thumbnail via Discord's proxy",
+										Description: "URL to access the thumbnail via Discord's proxy.",
 									},
 									"height": {
 										Type:        schema.TypeInt,
 										Optional:    true,
-										Description: "Height of the thumbnail",
+										Description: "Height of the thumbnail.",
 									},
 									"width": {
 										Type:        schema.TypeInt,
 										Optional:    true,
-										Description: "Width of the thumbnail",
+										Description: "Width of the thumbnail.",
 									},
 								},
 							},
@@ -181,23 +181,23 @@ func resourceDiscordMessage() *schema.Resource {
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
-							Description: "Video to be included in the embed",
+							Description: "Video to be included in the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"url": {
 										Type:        schema.TypeString,
 										Required:    true,
-										Description: "URL of the video to be included in the embed",
+										Description: "URL of the video to be included in the embed.",
 									},
 									"height": {
 										Type:        schema.TypeInt,
 										Optional:    true,
-										Description: "Height of the video",
+										Description: "Height of the video.",
 									},
 									"width": {
 										Type:        schema.TypeInt,
 										Optional:    true,
-										Description: "Width of the video",
+										Description: "Width of the video.",
 									},
 								},
 							},
@@ -206,18 +206,18 @@ func resourceDiscordMessage() *schema.Resource {
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
-							Description: "Provider of the embed",
+							Description: "Provider of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"name": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "Name of the provider",
+										Description: "Name of the provider.",
 									},
 									"url": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "URL of the provider",
+										Description: "URL of the provider.",
 									},
 								},
 							},
@@ -226,28 +226,28 @@ func resourceDiscordMessage() *schema.Resource {
 							Type:        schema.TypeList,
 							Optional:    true,
 							MaxItems:    1,
-							Description: "Author of the embed",
+							Description: "Author of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"name": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "Name of the author",
+										Description: "Name of the author.",
 									},
 									"url": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "URL of the author",
+										Description: "URL of the author.",
 									},
 									"icon_url": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "URL of the author's icon",
+										Description: "URL of the author's icon.",
 									},
 									"proxy_icon_url": {
 										Type:        schema.TypeString,
 										Computed:    true,
-										Description: "URL to access the author's icon via Discord's proxy",
+										Description: "URL to access the author's icon via Discord's proxy.",
 									},
 								},
 							},
@@ -255,23 +255,23 @@ func resourceDiscordMessage() *schema.Resource {
 						"fields": {
 							Type:        schema.TypeList,
 							Optional:    true,
-							Description: "Fields of the embed",
+							Description: "Fields of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"name": {
 										Type:        schema.TypeString,
 										Required:    true,
-										Description: "Name of the field",
+										Description: "Name of the field.",
 									},
 									"value": {
 										Type:        schema.TypeString,
 										Optional:    true,
-										Description: "Value of the field",
+										Description: "Value of the field.",
 									},
 									"inline": {
 										Type:        schema.TypeBool,
 										Optional:    true,
-										Description: "Whether the field is inline",
+										Description: "Whether the field is inline.",
 									},
 								},
 							},
@@ -283,12 +283,17 @@ func resourceDiscordMessage() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
-				Description: "Whether this message is pinned (default false)",
+				Description: "Whether this message is pinned. (default `false`)",
 			},
 			"type": {
 				Type:        schema.TypeInt,
 				Computed:    true,
-				Description: "The type of the message",
+				Description: "The type of the message.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the message.",
 			},
 		},
 	}

@@ -16,48 +16,48 @@ func resourceDiscordInvite() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Description: "A resource to create an Invite for a channel",
+		Description: "A resource to create an invite for a channel.",
 		Schema: map[string]*schema.Schema{
 			"channel_id": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "ID of the channel to create an invite for",
+				Description: "ID of the channel to create an invite for.",
 			},
 			"max_age": {
 				Type:        schema.TypeInt,
 				ForceNew:    true,
 				Optional:    true,
 				Default:     86400,
-				Description: "Age of the invite. 0 for permanent (default 86400)",
+				Description: "Age of the invite. `0` for permanent. (default `86400`)",
 			},
 			"max_uses": {
 				Type:        schema.TypeInt,
 				ForceNew:    true,
 				Optional:    true,
-				Description: "Max number of uses for the invite. 0 (the default) for unlimited",
+				Description: "Max number of uses for the invite. `0` (the default) for unlimited.",
 			},
 			"temporary": {
 				Type:        schema.TypeBool,
 				ForceNew:    true,
 				Optional:    true,
-				Description: "Whether the invite kicks users after the close discord (default false)",
+				Description: "Whether the invite kicks users after they close Discord. (default `false`)",
 			},
 			"unique": {
 				Type:        schema.TypeBool,
 				ForceNew:    true,
 				Optional:    true,
-				Description: "Whether this should create a new invite every time",
+				Description: "Whether this should create a new invite every time.",
 			},
 			"id": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The invite code",
+				Description: "The invite code.",
 			},
 			"code": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The invite code",
+				Description: "The invite code.",
 			},
 		},
 	}

@@ -34,4 +34,4 @@ resource "discord_system_channel" "system" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) The ID of the server.

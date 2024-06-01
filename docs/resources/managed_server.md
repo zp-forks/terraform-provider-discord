@@ -3,12 +3,12 @@
 page_title: "discord_managed_server Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create a server
+  A resource to create a server.
 ---
 
 # discord_managed_server (Resource)
 
-A resource to create a server
+A resource to create a server.
 
 ## Example Usage
 
@@ -23,25 +23,25 @@ resource "discord_managed_server" "my_server" {
 
 ### Required
 
-- `server_id` (String) The ID of the server to manage
+- `server_id` (String) The ID of the server to manage.
 
 ### Optional
 
-- `afk_channel_id` (String) Channel ID for moving AFK users to
-- `afk_timeout` (Number) many seconds before moving an AFK user
-- `default_message_notifications` (Number) Default Message Notification settings (0 = all messages, 1 = mentions)
-- `explicit_content_filter` (Number) Explicit Content Filter level
-- `icon_data_uri` (String) Data URI of an image to set the icon
-- `icon_url` (String) Remote URL for setting the icon of the server
-- `name` (String) Name of the server
-- `owner_id` (String) Owner ID of the server (Setting this will transfer ownership)
-- `region` (String) Region of the server
-- `splash_data_uri` (String) Data URI of an image to set the splash
-- `splash_url` (String) Remote URL for setting the splash of the server
-- `verification_level` (Number) Verification Level of the server
+- `afk_channel_id` (String) ID of the channel AFK users will be moved to.
+- `afk_timeout` (Number) How many seconds before moving an AFK user.
+- `default_message_notifications` (Number) Default message notification settings. (`0` = all messages, `1` = mentions)
+- `explicit_content_filter` (Number) Explicit content filter level of the server.
+- `icon_data_uri` (String) Data URI of an image to set the server icon to. Overrides `icon_url`.
+- `icon_url` (String) Remote URL to set the icon of the server to.
+- `name` (String) Name of the server.
+- `owner_id` (String) Owner ID of the server. Setting this will transfer ownership.
+- `region` (String) Region of the server.
+- `splash_data_uri` (String) Data URI of an image to set the splash image of the server to. Overrides `splash_url`
+- `splash_url` (String) Remote URL to set the splash image of the server to.
+- `verification_level` (Number) Verification level of the server.
 
 ### Read-Only
 
-- `icon_hash` (String) Hash of the icon
-- `id` (String) The ID of this resource.
-- `splash_hash` (String) Hash of the splash
+- `icon_hash` (String) Hash of the icon.
+- `id` (String) The ID of the server.
+- `splash_hash` (String) Hash of the splash.

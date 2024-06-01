@@ -13,12 +13,12 @@ func resourceDiscordNewsChannel() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Description: "A resource to create a news channel",
+		Description: "A resource to create a news channel.",
 		Schema: getChannelSchema("news", map[string]*schema.Schema{
 			"topic": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Topic of the channel",
+				Description: "Topic of the channel.",
 			},
 		}),
 	}

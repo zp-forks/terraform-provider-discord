@@ -3,12 +3,12 @@
 page_title: "discord_channel_permission Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create a Permission Overwrite for a channel
+  A resource to create a permission override for a channel.
 ---
 
 # discord_channel_permission (Resource)
 
-A resource to create a Permission Overwrite for a channel
+A resource to create a permission override for a channel.
 
 ## Example Usage
 
@@ -26,15 +26,15 @@ resource "discord_channel_permission" "chatting" {
 
 ### Required
 
-- `channel_id` (String) ID of channel for this overwrite
-- `overwrite_id` (String) ID of user or role for this overwrite
-- `type` (String) Type of the overwrite, `role` or `user`
+- `channel_id` (String) ID of the channel for this override.
+- `overwrite_id` (String) ID of the user or role for this override.
+- `type` (String) Type of the override. Must be `role` or `user`.
 
 ### Optional
 
-- `allow` (Number) Permission bits for the allowed permissions on this overwrite. At least one of these two (allow, deny) are required
-- `deny` (Number) ermission bits for the denied permissions on this overwrite. At least one of these two (allow, deny) are required
+- `allow` (Number) Permission bits for the allowed permissions on this override. At least one of `allow` or `deny` must be set.
+- `deny` (Number) Permission bits for the denied permissions on this override. At least one of `allow` or `deny` must be set.
 
 ### Read-Only
 
-- `id` (String) Hash of the channel id, overwrite id, and type
+- `id` (String) Hash of the channel ID, override ID, and type.

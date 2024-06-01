@@ -3,12 +3,12 @@
 page_title: "discord_local_image Data Source - discord"
 subcategory: ""
 description: |-
-  A simple helper to get data uri of a local image
+  A simple helper to get data URI of a local image.
 ---
 
 # discord_local_image (Data Source)
 
-A simple helper to get data uri of a local image
+A simple helper to get data URI of a local image.
 
 ## Example Usage
 
@@ -28,9 +28,9 @@ resource "discord_server" "server" {
 
 ### Required
 
-- `file` (String) The path to the file to process
+- `file` (String) The path to the file to process.
 
 ### Read-Only
 
-- `data_uri` (String) The data uri of the `file`
+- `data_uri` (String) The data URI of the `file`.
 - `id` (String) The ID of this resource.

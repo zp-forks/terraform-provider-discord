@@ -68,36 +68,36 @@ func dataSourceDiscordPermission() *schema.Resource {
 	schemaMap["allow_extends"] = &schema.Schema{
 		Type:        schema.TypeInt,
 		Optional:    true,
-		Description: "The permission bits to base the new permission set off of for allow",
+		Description: "The base permission bits for allow to extend.",
 	}
 	schemaMap["deny_extends"] = &schema.Schema{
 		Type:        schema.TypeInt,
 		Optional:    true,
-		Description: "The permission bits to base the new permission set off of for allow",
+		Description: "The base permission bits for deny to extend.",
 	}
 	schemaMap["allow_bits"] = &schema.Schema{
 		Type:        schema.TypeInt,
 		Computed:    true,
-		Description: "The allow permission bits",
+		Description: "The allow permission bits.",
 	}
 	schemaMap["deny_bits"] = &schema.Schema{
 		Type:        schema.TypeInt,
 		Computed:    true,
-		Description: "The allow permission bits",
+		Description: "The deny permission bits.",
 	}
 	for k := range permissions {
 		schemaMap[k] = &schema.Schema{
 			Optional:     true,
 			Type:         schema.TypeString,
 			Default:      "unset",
-			Description:  fmt.Sprintf("The value to set for the `%s` permission bit", k),
+			Description:  fmt.Sprintf("The value to set for the `%s` permission bit. Must be `allow`, `unset`, or `deny`. (default `unset`)", k),
 			ValidateFunc: validation.StringInSlice([]string{"allow", "unset", "deny"}, false),
 		}
 	}
 
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordPermissionRead,
-		Description: "A simple helper to get computed bit total of a list of permissions",
+		Description: "A simple helper to get computed bit total of a list of permissions.",
 		Schema:      schemaMap,
 	}
 }

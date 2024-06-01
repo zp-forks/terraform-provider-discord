@@ -3,12 +3,12 @@
 page_title: "discord_news_channel Resource - discord"
 subcategory: ""
 description: |-
-  A resource to create a news channel
+  A resource to create a news channel.
 ---
 
 # discord_news_channel (Resource)
 
-A resource to create a news channel
+A resource to create a news channel.
 
 ## Example Usage
 
@@ -25,18 +25,18 @@ resource "discord_news_channel" "general" {
 
 ### Required
 
-- `name` (String) Name of the channel
-- `server_id` (String) ID of server this channel is in
+- `name` (String) Name of the channel.
+- `server_id` (String) ID of server this channel is in.
 
 ### Optional
 
-- `category` (String) ID of category to place this channel in
-- `position` (Number) Position of the channel, 0-indexed
-- `sync_perms_with_category` (Boolean) Whether channel permissions should be synced or not with the category this channel is in
-- `topic` (String) Topic of the channel
-- `type` (String) The type of the channel. This should never be provided
+- `category` (String) ID of category to place this channel in.
+- `position` (Number) Position of the channel, `0`-indexed.
+- `sync_perms_with_category` (Boolean) Whether channel permissions should be synced with the category this channel is in.
+- `topic` (String) Topic of the channel.
+- `type` (String) The type of the channel. This is only for internal use and should never be provided.
 
 ### Read-Only
 
-- `channel_id` (String) The ID of the channel
-- `id` (String) The ID of the channel
+- `channel_id` (String) The ID of the channel.
+- `id` (String) The ID of the channel.

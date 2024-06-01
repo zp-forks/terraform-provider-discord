@@ -18,46 +18,46 @@ func resourceDiscordRole() *schema.Resource {
 			StateContext: resourceRoleImport,
 		},
 
-		Description: "A resource to create a role",
+		Description: "A resource to create a role.",
 		Schema: map[string]*schema.Schema{
 			"server_id": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "Which server the role will be in",
+				Description: "Which server the role will be in.",
 			},
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    false,
-				Description: "The name of the role",
+				Description: "The name of the role.",
 			},
 			"permissions": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     0,
 				ForceNew:    false,
-				Description: "The permission bits of the role",
+				Description: "The permission bits of the role.",
 			},
 			"color": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				ForceNew:    false,
-				Description: "The integer representation of the role color with decimal color code",
+				Description: "The integer representation of the role color with decimal color code.",
 			},
 			"hoist": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
 				ForceNew:    false,
-				Description: "Whether the role should be hoisted (default false)",
+				Description: "Whether the role should be hoisted. (default `false`)",
 			},
 			"mentionable": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
 				ForceNew:    false,
-				Description: "Whether the role should be mentionable (default false)",
+				Description: "Whether the role should be mentionable. (default `false`)",
 			},
 			"position": {
 				Type:         schema.TypeInt,
@@ -65,12 +65,17 @@ func resourceDiscordRole() *schema.Resource {
 				Default:      1,
 				ForceNew:     false,
 				ValidateFunc: validation.IntAtLeast(1),
-				Description:  "The position of the role. This is reverse indexed (@everyone is 0)",
+				Description:  "The position of the role. This is reverse indexed, with `@everyone` being `0`.",
 			},
 			"managed": {
 				Type:        schema.TypeBool,
 				Computed:    true,
-				Description: "Whether this role is managed by another service",
+				Description: "Whether this role is managed by another service.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the role.",
 			},
 		},
 	}

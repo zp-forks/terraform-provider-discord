@@ -13,7 +13,7 @@ func resourceDiscordCategoryChannel() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Description: "A resource to create a Category channel",
+		Description: "A resource to create a category channel.",
 		Schema:      getChannelSchema("category", nil),
 	}
 }
