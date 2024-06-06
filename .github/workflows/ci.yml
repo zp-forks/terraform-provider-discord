@@ -26,9 +26,18 @@ jobs:
         run: go test -v ./...
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
       - name: Generate docs
+        shell: bash
         run: go generate ./...
       - name: Check for documentation changes
+        shell: bash
         run: |
-          git diff --compact-summary --exit-code || \
-            (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
+          result=0
+          git diff --compact-summary --exit-code || result=$?
+          if [ ! "$result" -eq "0" ]; then
+            echo
+            echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."
+            exit 1
+          fi
