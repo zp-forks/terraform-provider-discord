@@ -13,20 +13,24 @@ import (
 func dataSourceDiscordColor() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordColorRead,
+		Description: "A simple helper to get the integer representation of a hex or RGB color.",
 		Schema: map[string]*schema.Schema{
 			"hex": {
 				ExactlyOneOf: []string{"hex", "rgb"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The hex color code. Either this or `rgb` is required.",
 			},
 			"rgb": {
 				ExactlyOneOf: []string{"hex", "rgb"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The RGB color, in format: `rgb(R, G, B)`. Either this or `hex` is required.",
 			},
 			"dec": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The integer representation of the passed color.",
 			},
 		},
 	}

@@ -22,32 +22,43 @@ func resourceDiscordChannelPermission() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
+		Description: "A resource to create a permission override for a channel.",
 		Schema: map[string]*schema.Schema{
 			"channel_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "ID of the channel for this override.",
 			},
 			"type": {
 				Type:         schema.TypeString,
 				ForceNew:     true,
 				Required:     true,
+				Description:  "Type of the override. Must be `role` or `user`.",
 				ValidateFunc: validation.StringInSlice([]string{"role", "user"}, false),
 			},
 			"overwrite_id": {
-				ForceNew: true,
-				Required: true,
-				Type:     schema.TypeString,
+				ForceNew:    true,
+				Required:    true,
+				Type:        schema.TypeString,
+				Description: "ID of the user or role for this override.",
 			},
 			"allow": {
 				AtLeastOneOf: []string{"allow", "deny"},
 				Optional:     true,
 				Type:         schema.TypeInt,
+				Description:  "Permission bits for the allowed permissions on this override. At least one of `allow` or `deny` must be set.",
 			},
 			"deny": {
 				AtLeastOneOf: []string{"allow", "deny"},
 				Optional:     true,
 				Type:         schema.TypeInt,
+				Description:  "Permission bits for the denied permissions on this override. At least one of `allow` or `deny` must be set.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Hash of the channel ID, override ID, and type.",
 			},
 		},
 	}

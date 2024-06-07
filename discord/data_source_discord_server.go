@@ -2,6 +2,7 @@ package discord
 
 import (
 	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -10,52 +11,69 @@ import (
 func dataSourceDiscordServer() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordServerRead,
+		Description: "Fetches a server's information.",
 		Schema: map[string]*schema.Schema{
 			"server_id": {
 				ExactlyOneOf: []string{"server_id", "name"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The server ID to search for.",
 			},
 			"name": {
 				ExactlyOneOf: []string{"server_id", "name"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The server name to search for.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the server.",
 			},
 			"region": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The region of the server.",
 			},
 			"default_message_notifications": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The default message notification level of the server.",
 			},
 			"verification_level": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The required verification level of the server.",
 			},
 			"explicit_content_filter": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The explicit content filter level of the server.",
 			},
 			"afk_timeout": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The AFK timeout of the server.",
 			},
 			"icon_hash": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The hash of the server icon.",
 			},
 			"splash_hash": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The hash of the server splash.",
 			},
 			"afk_channel_id": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The AFK channel ID.",
 			},
 			"owner_id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the owner.",
 			},
 		},
 	}

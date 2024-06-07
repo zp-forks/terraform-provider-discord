@@ -1,10 +1,10 @@
 package discord
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"strings"
 	"time"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -20,215 +20,258 @@ func resourceDiscordMessage() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
+		Description: "A resource to create a message",
 		Schema: map[string]*schema.Schema{
 			"channel_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "ID of the channel the message will be in.",
 			},
 			"server_id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "ID of the server this message is in.",
 			},
 			"author": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "ID of the user who wrote the message.",
 			},
 			"content": {
 				AtLeastOneOf: []string{"content", "embed"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "Text content of message. At least one of `content` or `embed` must be set.",
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					return old == strings.TrimSuffix(new, "\r\n")
 				},
 			},
 			"timestamp": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "When the message was sent.",
 			},
 			"edited_timestamp": {
-				Type:     schema.TypeString,
-				Computed: true,
-				Optional: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Optional:    true,
+				Description: "When the message was edited.",
 			},
 			"tts": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Whether this message triggers TTS. (default `false`)",
 			},
 			"embed": {
 				AtLeastOneOf: []string{"content", "embed"},
 				Type:         schema.TypeList,
 				Optional:     true,
 				MaxItems:     1,
+				Description:  "An embed block. At least one of `content` or `embed` must be set.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"title": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Title of the embed.",
 						},
 						"description": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Description of the embed.",
 						},
 						"url": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "URL of the embed.",
 						},
 						"timestamp": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Timestamp of the embed content.",
 						},
 						"color": {
-							Type:     schema.TypeInt,
-							Optional: true,
+							Type:        schema.TypeInt,
+							Optional:    true,
+							Description: "Color of the embed. Must be an integer color code.",
 						},
 						"footer": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Description: "Footer of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"text": {
-										Type:     schema.TypeString,
-										Required: true,
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "Text of the footer.",
 									},
 									"icon_url": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "URL to an icon to be included in the footer.",
 									},
 								},
 							},
 						},
 						"image": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Description: "Image to be included in the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"url": {
-										Type:     schema.TypeString,
-										Required: true,
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "URL of the image to be included in the embed.",
 									},
 									"proxy_url": {
-										Type:     schema.TypeString,
-										Computed: true,
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "URL to access the image via Discord's proxy.",
 									},
 									"height": {
-										Type:     schema.TypeInt,
-										Optional: true,
+										Type:        schema.TypeInt,
+										Optional:    true,
+										Description: "Height of the image.",
 									},
 									"width": {
-										Type:     schema.TypeInt,
-										Optional: true,
+										Type:        schema.TypeInt,
+										Optional:    true,
+										Description: "Width of the image.",
 									},
 								},
 							},
 						},
 						"thumbnail": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Description: "Thumbnail to be included in the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"url": {
-										Type:     schema.TypeString,
-										Required: true,
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "URL of the thumbnail to be included in the embed.",
 									},
 									"proxy_url": {
-										Type:     schema.TypeString,
-										Computed: true,
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "URL to access the thumbnail via Discord's proxy.",
 									},
 									"height": {
-										Type:     schema.TypeInt,
-										Optional: true,
+										Type:        schema.TypeInt,
+										Optional:    true,
+										Description: "Height of the thumbnail.",
 									},
 									"width": {
-										Type:     schema.TypeInt,
-										Optional: true,
+										Type:        schema.TypeInt,
+										Optional:    true,
+										Description: "Width of the thumbnail.",
 									},
 								},
 							},
 						},
 						"video": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Description: "Video to be included in the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"url": {
-										Type:     schema.TypeString,
-										Required: true,
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "URL of the video to be included in the embed.",
 									},
 									"height": {
-										Type:     schema.TypeInt,
-										Optional: true,
+										Type:        schema.TypeInt,
+										Optional:    true,
+										Description: "Height of the video.",
 									},
 									"width": {
-										Type:     schema.TypeInt,
-										Optional: true,
+										Type:        schema.TypeInt,
+										Optional:    true,
+										Description: "Width of the video.",
 									},
 								},
 							},
 						},
 						"provider": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Description: "Provider of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"name": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "Name of the provider.",
 									},
 									"url": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "URL of the provider.",
 									},
 								},
 							},
 						},
 						"author": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Description: "Author of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"name": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "Name of the author.",
 									},
 									"url": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "URL of the author.",
 									},
 									"icon_url": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "URL of the author's icon.",
 									},
 									"proxy_icon_url": {
-										Type:     schema.TypeString,
-										Computed: true,
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "URL to access the author's icon via Discord's proxy.",
 									},
 								},
 							},
 						},
 						"fields": {
-							Type:     schema.TypeList,
-							Optional: true,
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "Fields of the embed.",
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"name": {
-										Type:     schema.TypeString,
-										Required: true,
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "Name of the field.",
 									},
 									"value": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "Value of the field.",
 									},
 									"inline": {
-										Type:     schema.TypeBool,
-										Optional: true,
+										Type:        schema.TypeBool,
+										Optional:    true,
+										Description: "Whether the field is inline.",
 									},
 								},
 							},
@@ -237,13 +280,20 @@ func resourceDiscordMessage() *schema.Resource {
 				},
 			},
 			"pinned": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Whether this message is pinned. (default `false`)",
 			},
 			"type": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The type of the message.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The ID of the message.",
 			},
 		},
 	}

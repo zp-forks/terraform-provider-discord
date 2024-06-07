@@ -3,11 +3,11 @@ package discord
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 var permissions map[string]int64
@@ -66,32 +66,38 @@ func dataSourceDiscordPermission() *schema.Resource {
 
 	schemaMap := make(map[string]*schema.Schema)
 	schemaMap["allow_extends"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Optional: true,
+		Type:        schema.TypeInt,
+		Optional:    true,
+		Description: "The base permission bits for allow to extend.",
 	}
 	schemaMap["deny_extends"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Optional: true,
+		Type:        schema.TypeInt,
+		Optional:    true,
+		Description: "The base permission bits for deny to extend.",
 	}
 	schemaMap["allow_bits"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Computed: true,
+		Type:        schema.TypeInt,
+		Computed:    true,
+		Description: "The allow permission bits.",
 	}
 	schemaMap["deny_bits"] = &schema.Schema{
-		Type:     schema.TypeInt,
-		Computed: true,
+		Type:        schema.TypeInt,
+		Computed:    true,
+		Description: "The deny permission bits.",
 	}
 	for k := range permissions {
 		schemaMap[k] = &schema.Schema{
 			Optional:     true,
 			Type:         schema.TypeString,
 			Default:      "unset",
+			Description:  fmt.Sprintf("The value to set for the `%s` permission bit. Must be `allow`, `unset`, or `deny`. (default `unset`)", k),
 			ValidateFunc: validation.StringInSlice([]string{"allow", "unset", "deny"}, false),
 		}
 	}
 
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordPermissionRead,
+		Description: "A simple helper to get computed bit total of a list of permissions.",
 		Schema:      schemaMap,
 	}
 }

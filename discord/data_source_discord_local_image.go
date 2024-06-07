@@ -12,14 +12,17 @@ import (
 func dataSourceDiscordLocalImage() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceDiscordLocalImageRead,
+		Description: "A simple helper to get data URI of a local image.",
 		Schema: map[string]*schema.Schema{
 			"file": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The path to the file to process.",
 			},
 			"data_uri": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The data URI of the `file`.",
 			},
 		},
 	}

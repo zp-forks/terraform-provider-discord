@@ -2,8 +2,8 @@ package discord
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"golang.org/x/net/context"
@@ -12,52 +12,68 @@ import (
 func dataSourceDiscordMember() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceMemberRead,
+		Description: "Fetches a member's information from a server.",
 
 		Schema: map[string]*schema.Schema{
 			"server_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The server ID to search for the user in.",
 			},
 			"user_id": {
 				ExactlyOneOf: []string{"user_id", "username"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The user ID to search for. Required if not searching by `username` / `discriminator`.",
 			},
 			"username": {
 				ExactlyOneOf: []string{"user_id", "username"},
 				Type:         schema.TypeString,
 				Optional:     true,
+				Description:  "The username to search for.",
 			},
 			"discriminator": {
-				Type:       schema.TypeString,
-				Optional:   true,
-				Deprecated: "Discriminator is being deprecated by Discord. Only use this if there are users who haven't migrated their username.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The discriminator to search for. `username` is required when using this.",
+				Deprecated:  "Discriminator is being deprecated by Discord. Only use this if there are users who haven't migrated their username.",
+			},
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The user's ID.",
 			},
 			"joined_at": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The time at which the user joined.",
 			},
 			"premium_since": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The time at which the user became premium.",
 			},
 			"avatar": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The avatar hash of the user.",
 			},
 			"nick": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The current nickname of the user.",
 			},
 			"roles": {
-				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Computed: true,
-				Set:      schema.HashString,
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Computed:    true,
+				Set:         schema.HashString,
+				Description: "IDs of the roles that the user has.",
 			},
 			"in_server": {
-				Type:     schema.TypeBool,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the user is in the server.",
 			},
 		},
 	}
