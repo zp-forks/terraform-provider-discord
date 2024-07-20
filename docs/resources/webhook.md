@@ -49,3 +49,11 @@ output "webhook-url" {
 - `slack_url` (String, Sensitive) The Slack-compatible webhook URL.
 - `token` (String, Sensitive) The webhook token.
 - `url` (String, Sensitive) The webhook URL.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_webhook.example "<webhook id>"
+```

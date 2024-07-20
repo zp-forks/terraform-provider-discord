@@ -37,3 +37,11 @@ resource "discord_invite" "chatting" {
 
 - `code` (String) The invite code.
 - `id` (String) The invite code.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_invite.example "<invite code>"
+```

@@ -33,3 +33,11 @@ resource "discord_role_everyone" "everyone" {
 ### Read-Only
 
 - `id` (String) The ID of the server.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_role_everyone.example "<server id>"
+```

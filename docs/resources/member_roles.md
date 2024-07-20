@@ -51,3 +51,11 @@ Required:
 Optional:
 
 - `has_role` (Boolean) Whether the user should have the role. (default `true`)
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_member_roles.example "<server id>:<member id>"
+```

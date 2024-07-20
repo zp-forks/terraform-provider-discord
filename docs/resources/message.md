@@ -184,3 +184,11 @@ Optional:
 
 
 
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_message.example "<message id>"
+```
