@@ -44,3 +44,11 @@ resource "discord_role" "moderator" {
 
 - `id` (String) The ID of the role.
 - `managed` (Boolean) Whether this role is managed by another service.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_role.example "<server id>:<role id>"
+```

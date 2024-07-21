@@ -45,3 +45,11 @@ resource "discord_managed_server" "my_server" {
 - `icon_hash` (String) Hash of the icon.
 - `id` (String) The ID of the server.
 - `splash_hash` (String) Hash of the splash.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_managed_server.example "<server id>"
+```

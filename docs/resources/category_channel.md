@@ -37,3 +37,11 @@ resource "discord_category_channel" "chatting" {
 
 - `channel_id` (String) The ID of the channel.
 - `id` (String) The ID of the channel.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import discord_category_channel.example "<channel id>"
+```
