@@ -1,1 +1,1 @@
-terraform import discord_text_channel.example "<channel id>"
+terraform import discord_voice_channel.example "<channel id>"
