@@ -57,5 +57,3 @@ Read-Only:
 - `name` (String)
 - `permissions` (Number)
 - `position` (Number)
-
-
