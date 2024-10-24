@@ -38,7 +38,7 @@ resource "discord_role" "moderator" {
 - `hoist` (Boolean) Whether the role should be hoisted. (default `false`)
 - `mentionable` (Boolean) Whether the role should be mentionable. (default `false`)
 - `permissions` (Number) The permission bits of the role.
-- `position` (Number) The position of the role. This is reverse indexed, with `@everyone` being `0`.
+- `position` (Number) Position of the role. This is reverse indexed, with `@everyone` being `0`.
 
 ### Read-Only
 
