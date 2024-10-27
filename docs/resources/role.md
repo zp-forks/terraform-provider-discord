@@ -29,20 +29,20 @@ resource "discord_role" "moderator" {
 
 ### Required
 
-- `name` (String) The name of the role.
+- `name` (String) Name of the role.
 - `server_id` (String) Which server the role will be in.
 
 ### Optional
 
-- `color` (Number) The integer representation of the role color with decimal color code.
+- `color` (Number) Integer representation of the role color with decimal color code.
 - `hoist` (Boolean) Whether the role should be hoisted. (default `false`)
 - `mentionable` (Boolean) Whether the role should be mentionable. (default `false`)
-- `permissions` (Number) The permission bits of the role.
-- `position` (Number) The position of the role. This is reverse indexed, with `@everyone` being `0`.
+- `permissions` (Number) Permission bits of the role.
+- `position` (Number) Position of the role. This is reverse indexed, with `@everyone` being `0`.
 
 ### Read-Only
 
-- `id` (String) The ID of the role.
+- `id` (String) ID of the role.
 - `managed` (Boolean) Whether this role is managed by another service.
 
 ## Import
