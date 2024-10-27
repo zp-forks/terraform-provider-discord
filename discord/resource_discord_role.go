@@ -66,7 +66,7 @@ func resourceDiscordRole() *schema.Resource {
 				Computed:     true,
 				ForceNew:     false,
 				ValidateFunc: validation.IntAtLeast(1),
-				Description:  "Position of the role. This is reverse indexed, with `@everyone` being `0`.",
+				Description:  "The position of the role. This is reverse indexed, with `@everyone` being `0`.",
 			},
 			"managed": {
 				Type:        schema.TypeBool,
