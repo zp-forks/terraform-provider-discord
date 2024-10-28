@@ -31,20 +31,20 @@ func resourceDiscordRole() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    false,
-				Description: "The name of the role.",
+				Description: "Name of the role.",
 			},
 			"permissions": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     0,
 				ForceNew:    false,
-				Description: "The permission bits of the role.",
+				Description: "Permission bits of the role.",
 			},
 			"color": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				ForceNew:    false,
-				Description: "The integer representation of the role color with decimal color code.",
+				Description: "Integer representation of the role color with decimal color code.",
 			},
 			"hoist": {
 				Type:        schema.TypeBool,
@@ -63,10 +63,10 @@ func resourceDiscordRole() *schema.Resource {
 			"position": {
 				Type:         schema.TypeInt,
 				Optional:     true,
-				Default:      1,
+				Computed:     true,
 				ForceNew:     false,
 				ValidateFunc: validation.IntAtLeast(1),
-				Description:  "The position of the role. This is reverse indexed, with `@everyone` being `0`.",
+				Description:  "Position of the role. This is reverse indexed, with `@everyone` being `0`.",
 			},
 			"managed": {
 				Type:        schema.TypeBool,
@@ -76,7 +76,7 @@ func resourceDiscordRole() *schema.Resource {
 			"id": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The ID of the role.",
+				Description: "ID of the role.",
 			},
 		},
 	}
@@ -133,6 +133,8 @@ func resourceRoleCreate(ctx context.Context, d *schema.ResourceData, m interface
 		} else {
 			d.Set("position", newPosition)
 		}
+	} else {
+		d.Set("position", role.Position)
 	}
 
 	d.SetId(role.ID)
