@@ -1,6 +1,8 @@
 {
-    "extends": ["github>Lucky3028/renovate"],
-    "includeForks": true,
+    "extends": [
+        "github>Lucky3028/renovate"
+    ],
+    "forkProcessing": "enabled",
     "postUpdateOptions": [
         "gomodTidy"
     ]
