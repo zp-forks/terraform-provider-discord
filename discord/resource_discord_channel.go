@@ -153,6 +153,12 @@ func resourceChannelCreate(ctx context.Context, d *schema.ResourceData, m interf
 	)
 
 	switch channelType {
+	case "forum":
+		{
+			if v, ok := d.GetOk("nsfw"); ok {
+				nsfw = v.(bool)
+			}
+		}
 	case "text", "news":
 		{
 			if v, ok := d.GetOk("topic"); ok {
