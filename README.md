@@ -3,7 +3,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/zp-forks/terraform-provider-discord/ci.yml?branch=main&style=for-the-badge)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/zp-forks/terraform-provider-discord?style=for-the-badge)
 
-This is a fork of [Lucky3028/terraform-provider-discord](https://github.com/Chaotic-Logic/terraform-provider-discord).
+This is a fork of [Lucky3028/terraform-provider-discord](https://github.com/Lucky3028/terraform-provider-discord).
 
 Here's Terraform Registry page of this repository: <https://registry.terraform.io/providers/zp-forks/discord/latest>
 
