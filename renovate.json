@@ -1,9 +1,24 @@
 {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "github>Lucky3028/renovate"
+        "config:base",
+        ":timezone(Europe/London)",
+        ":automergePatch",
+        ":prHourlyLimitNone",
+        ":semanticCommits"
     ],
-    "forkProcessing": "enabled",
-    "postUpdateOptions": [
-        "gomodTidy"
+    "dependencyDashboard": true,
+    "schedule": ["after 9pm and before 12am every weekend"],
+    "packageRules": [
+        {
+            "matchDepTypes": ["devDependencies"],
+            "groupName": "devDependencies",
+            "rangeStrategy": "update-lockfile"
+        },
+        {
+            "matchDepTypes": ["dependencies"],
+            "matchUpdateTypes": ["minor", "patch"],
+            "groupName": "dependencies"
+        }
     ]
 }

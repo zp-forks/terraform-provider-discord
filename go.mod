@@ -1,4 +1,4 @@
-module github.com/lucky3028/discord-terraform
+module github.com/zp-forks/discord-terraform
 
 go 1.23.0
 
